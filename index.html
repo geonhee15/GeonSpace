@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geon_Space</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background-color: #ffffff;
+      color: #1f2328;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      height: 64px;
+      padding: 0 16px;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .site-desc {
+      font-size: 10px;
+      font-weight: 400;
+      color: #656d76;
+      letter-spacing: 0.5px;
+    }
+
+    .site-name {
+      font-size: 28px;
+      font-weight: 800;
+      color: #000000;
+      text-decoration: none;
+    }
+
+    .clock {
+      margin: 20px 16px 0;
+      font-size: 32px;
+      font-weight: 600;
+      color: #1f2328;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .calendar {
+      margin: 24px 16px;
+      width: 22%;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .calendar-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .calendar-nav button {
+      background: #f6f8fa;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #1f2328;
+    }
+
+    .calendar-nav button:hover {
+      background: #eaeef2;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+    }
+
+    .calendar-grid .day-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #656d76;
+      padding: 8px 0;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .calendar-grid .day {
+      padding: 0;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: default;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .calendar-grid .day:hover {
+      background: #f6f8fa;
+    }
+
+    .calendar-grid .day.empty {
+      background: transparent;
+    }
+
+    .calendar-grid .day.today {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .widgets-row {
+      display: flex;
+      gap: 16px;
+      margin: 24px 16px;
+    }
+
+    .widgets-row .calendar {
+      margin: 0;
+    }
+
+    .youtube-box {
+      width: 22%;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .youtube-header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .youtube-channels {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .yt-channel {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .yt-channel-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1f2328;
+      text-decoration: none;
+    }
+
+    .yt-channel-name:hover {
+      color: #0969da;
+    }
+
+    .yt-subs {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2328;
+    }
+
+    .yt-label {
+      font-size: 11px;
+      color: #656d76;
+    }
+
+    .youtube-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .yt-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #d1d9e0;
+      border-top: 2px solid #656d76;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: none;
+    }
+
+    .yt-spinner.active {
+      display: block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .skills-box {
+      width: 22%;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .skills-header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .skills-list {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .skill-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .skill-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .skill-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1f2328;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .skill-name i {
+      font-size: 16px;
+    }
+
+    .skill-pct {
+      font-size: 12px;
+      color: #656d76;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .skill-bar {
+      width: 100%;
+      height: 8px;
+      background: #eaeef2;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: #0969da;
+      border-radius: 4px;
+      transition: width 0.2s;
+    }
+
+    .skill-slider {
+      width: 100%;
+      margin: 0;
+      cursor: pointer;
+      accent-color: #0969da;
+    }
+
+    .skills-add-section {
+      padding: 8px 16px;
+      border-top: 1px solid #d1d9e0;
+    }
+
+    .skills-add-btn {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: #656d76;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .skills-add-btn:hover {
+      color: #0969da;
+    }
+
+    .skills-picker {
+      display: none;
+      padding: 8px 16px 12px;
+      border-top: 1px solid #d1d9e0;
+    }
+
+    .skills-picker.open {
+      display: block;
+    }
+
+    .skills-search {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 12px;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      outline: none;
+      margin-bottom: 6px;
+    }
+
+    .skills-search:focus {
+      border-color: #0969da;
+    }
+
+    .skills-picker-list {
+      max-height: 150px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .skills-picker-item {
+      padding: 4px 6px;
+      font-size: 12px;
+      color: #1f2328;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .skills-picker-item i {
+      font-size: 14px;
+    }
+
+    .skills-picker-item:hover {
+      background: #f6f8fa;
+    }
+
+    .channels-box {
+      margin: 24px 16px;
+      width: 22%;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .channels-header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .channels-list {
+      padding: 8px 16px;
+    }
+
+    .channel-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .channel-item:last-child {
+      border-bottom: none;
+    }
+
+    .channel-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1f2328;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 140px;
+    }
+
+    .channel-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .channel-go {
+      font-size: 11px;
+      color: #0969da;
+      text-decoration: none;
+      border: 1px solid #d1d9e0;
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+
+    .channel-go:hover {
+      background: #f6f8fa;
+    }
+
+    .channel-del {
+      background: none;
+      border: none;
+      color: #cf222e;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 0;
+    }
+
+    .channel-del:hover {
+      color: #a40e26;
+    }
+
+    .channels-add {
+      padding: 8px 16px;
+      border-top: 1px solid #d1d9e0;
+    }
+
+    .channels-add button {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: #656d76;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .channels-add button:hover {
+      color: #0969da;
+    }
+
+    .channels-empty {
+      padding: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: #656d76;
+    }
+
+    .roulette-box {
+      margin: 24px 16px;
+      width: 22%;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .roulette-header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .roulette-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      gap: 16px;
+    }
+
+    .roulette-result {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1f2328;
+      min-height: 30px;
+    }
+
+    .roulette-btn {
+      background: #0969da;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .roulette-btn:hover {
+      background: #0860ca;
+    }
+
+    .roulette-btn.spinning {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .roulette-add {
+      padding: 8px 16px;
+      border-top: 1px solid #d1d9e0;
+    }
+
+    .roulette-add button {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: #656d76;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .roulette-add button:hover {
+      color: #0969da;
+    }
+
+    .roulette-list {
+      padding: 8px 16px;
+      border-top: 1px solid #d1d9e0;
+      display: none;
+    }
+
+    .roulette-list.open {
+      display: block;
+    }
+
+    .roulette-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 12px;
+      color: #1f2328;
+    }
+
+    .roulette-list-item .delete-btn {
+      background: none;
+      border: none;
+      color: #cf222e;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 0 4px;
+    }
+
+    .roulette-list-item .delete-btn:hover {
+      color: #a40e26;
+    }
+
+    .calendar-grid .day.today span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #0969da;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <a href="/" class="site-name">Geon_Space</a>
+      <p class="site-desc">김건희의 퍼스널 워크스페이스</p>
+    </div>
+  </header>
+
+  <div class="clock" id="clock">00:00:00</div>
+
+  <div class="widgets-row">
+    <div class="calendar">
+      <div class="calendar-header">
+        <h2 id="calendar-title"></h2>
+        <div class="calendar-nav">
+          <button onclick="changeMonth(-1)">&lt;</button>
+          <button onclick="changeMonth(1)">&gt;</button>
+        </div>
+      </div>
+      <div class="calendar-grid" id="calendar-grid"></div>
+    </div>
+
+    <div class="skills-box">
+      <div class="skills-header">코딩 언어 숙련도</div>
+      <div class="skills-list" id="skills-list"></div>
+      <div class="skills-add-section">
+        <button class="skills-add-btn" onclick="toggleSkillsPicker()">+ 언어 추가</button>
+      </div>
+      <div class="skills-picker" id="skills-picker">
+        <input type="text" class="skills-search" id="skills-search" placeholder="언어 검색..." oninput="filterLanguages()">
+        <div class="skills-picker-list" id="skills-picker-list"></div>
+      </div>
+    </div>
+
+    <div class="youtube-box">
+      <div class="youtube-header"><span>YouTube</span><div class="yt-spinner" id="yt-spinner"></div></div>
+      <div class="youtube-channels">
+        <div class="yt-channel">
+          <a class="yt-channel-name" href="https://www.youtube.com/@원소15" target="_blank">원소15</a>
+          <div class="yt-subs" id="yt-subs-1">--</div>
+          <div class="yt-label">구독자</div>
+        </div>
+        <div class="yt-channel">
+          <a class="yt-channel-name" href="https://www.youtube.com/@원소의편집물" target="_blank">원소의편집물</a>
+          <div class="yt-subs" id="yt-subs-2">--</div>
+          <div class="yt-label">구독자</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="channels-box">
+    <div class="channels-header">오마이갓 채널 리스트</div>
+    <div class="channels-list" id="channels-list"></div>
+    <div class="channels-add">
+      <button onclick="addChannel()">+ 채널 추가</button>
+    </div>
+  </div>
+
+  <div class="roulette-box">
+    <div class="roulette-header">할거없을 때 룰렛</div>
+    <div class="roulette-content">
+      <div class="roulette-result" id="roulette-result">?</div>
+      <button class="roulette-btn" id="roulette-btn" onclick="spinRoulette()">돌리기</button>
+    </div>
+    <div class="roulette-add">
+      <button onclick="addRouletteItem()">+ 할거 추가</button>
+      <button onclick="toggleList()" style="margin-left:8px">목록 보기</button>
+    </div>
+    <div class="roulette-list" id="roulette-list"></div>
+  </div>
+
+  <script>
+    let currentDate = new Date();
+
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const today = new Date();
+
+      const title = document.getElementById('calendar-title');
+      title.textContent = `${year}년 ${month + 1}월`;
+
+      const grid = document.getElementById('calendar-grid');
+      grid.innerHTML = '';
+
+      const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+      dayNames.forEach(name => {
+        const el = document.createElement('div');
+        el.className = 'day-name';
+        el.textContent = name;
+        grid.appendChild(el);
+      });
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < firstDay; i++) {
+        const el = document.createElement('div');
+        el.className = 'day empty';
+        grid.appendChild(el);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const el = document.createElement('div');
+        el.className = 'day';
+        el.textContent = d;
+
+        if (d === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+          el.classList.add('today');
+          const span = document.createElement('span');
+          span.textContent = d;
+          el.textContent = '';
+          el.appendChild(span);
+        }
+
+        grid.appendChild(el);
+      }
+    }
+
+    function changeMonth(offset) {
+      currentDate.setMonth(currentDate.getMonth() + offset);
+      renderCalendar();
+    }
+
+    renderCalendar();
+
+    const langIcons = {
+      'ActionScript':'devicon-plain','Ada':'devicon-plain',
+      'Apex':'devicon-plain','AppleScript':'devicon-apple-original',
+      'Assembly':'devicon-plain','AutoHotkey':'devicon-plain','AutoIt':'devicon-plain',
+      'Ballerina':'devicon-ballerina-original','Bash':'devicon-bash-plain',
+      'Batch':'devicon-windows8-original','Blazor':'devicon-blazor-original',
+      'Brainfuck':'devicon-plain','C':'devicon-c-plain','C#':'devicon-csharp-plain',
+      'C++':'devicon-cplusplus-plain','Carbon':'devicon-plain',
+      'Clojure':'devicon-clojure-plain','COBOL':'devicon-plain',
+      'CoffeeScript':'devicon-coffeescript-original','Crystal':'devicon-crystal-original',
+      'CSS':'devicon-css3-plain','Cuda':'devicon-plain',
+      'D':'devicon-plain','Dart':'devicon-dart-plain','Delphi':'devicon-plain',
+      'Elixir':'devicon-elixir-plain','Elm':'devicon-elm-plain',
+      'Erlang':'devicon-erlang-plain','F#':'devicon-fsharp-plain',
+      'Factor':'devicon-plain','Forth':'devicon-plain','Fortran':'devicon-plain',
+      'GDScript':'devicon-godot-plain','GLSL':'devicon-opengl-plain',
+      'Go':'devicon-go-plain','Godot':'devicon-godot-plain',
+      'GraphQL':'devicon-graphql-plain','Groovy':'devicon-groovy-plain',
+      'Hack':'devicon-plain','Haskell':'devicon-haskell-plain',
+      'Haxe':'devicon-haxe-plain','HLSL':'devicon-plain',
+      'HTML':'devicon-html5-plain','Idris':'devicon-plain',
+      'Java':'devicon-java-plain','JavaScript':'devicon-javascript-plain',
+      'JSON':'devicon-json-plain','Julia':'devicon-julia-plain',
+      'Kotlin':'devicon-kotlin-plain','LabVIEW':'devicon-labview-plain',
+      'LaTeX':'devicon-latex-original','Less':'devicon-less-plain-wordmark',
+      'Lisp':'devicon-plain','Lua':'devicon-lua-plain',
+      'Makefile':'devicon-plain','Markdown':'devicon-markdown-original',
+      'MATLAB':'devicon-matlab-plain','Mojo':'devicon-plain',
+      'Nim':'devicon-nim-plain','Nix':'devicon-nixos-plain',
+      'Objective-C':'devicon-objectivec-plain','OCaml':'devicon-ocaml-plain',
+      'Odin':'devicon-odin-plain','Pascal':'devicon-plain',
+      'Perl':'devicon-perl-plain','PHP':'devicon-php-plain',
+      'PL/SQL':'devicon-oracle-original','PostScript':'devicon-plain',
+      'PowerShell':'devicon-powershell-plain','Prolog':'devicon-prolog-plain',
+      'Protocol Buffers':'devicon-protobuf-plain','PureScript':'devicon-purescript-original',
+      'Python':'devicon-python-plain','R':'devicon-r-plain',
+      'Racket':'devicon-plain','Raku':'devicon-plain',
+      'Reason':'devicon-reason-original','ReScript':'devicon-rescript-original',
+      'Ruby':'devicon-ruby-plain','Rust':'devicon-rust-original',
+      'SAS':'devicon-plain','Sass/SCSS':'devicon-sass-original',
+      'Scala':'devicon-scala-plain','Scheme':'devicon-plain',
+      'Shell':'devicon-bash-plain','Smalltalk':'devicon-plain',
+      'Solidity':'devicon-solidity-plain','SQL':'devicon-azuresqldatabase-plain',
+      'Svelte':'devicon-svelte-plain','Swift':'devicon-swift-plain',
+      'Tcl':'devicon-plain','Terraform':'devicon-terraform-plain',
+      'TOML':'devicon-plain','TypeScript':'devicon-typescript-plain',
+      'V':'devicon-v-original','Vala':'devicon-plain',
+      'VBA':'devicon-plain','Verilog':'devicon-plain','VHDL':'devicon-plain',
+      'Vim Script':'devicon-vim-plain','Visual Basic':'devicon-visualbasic-plain',
+      'Vue':'devicon-vuejs-plain','WebAssembly':'devicon-wasm-original',
+      'Wolfram':'devicon-plain','XML':'devicon-xml-plain',
+      'YAML':'devicon-yaml-plain','Zig':'devicon-zig-plain','Zsh':'devicon-bash-plain'
+    };
+
+    function getLangIcon(name) {
+      const cls = langIcons[name] || 'devicon-plain';
+      if (cls === 'devicon-plain') return '';
+      return `<i class="${cls}"></i>`;
+    }
+
+    const defaultSkills = [
+      { name: 'Python', pct: 50 },
+      { name: 'Java', pct: 50 }
+    ];
+    const skills = JSON.parse(localStorage.getItem('skills')) || [...defaultSkills];
+
+    function saveSkills() {
+      localStorage.setItem('skills', JSON.stringify(skills));
+    }
+
+    function renderSkills() {
+      const list = document.getElementById('skills-list');
+      list.innerHTML = '';
+      skills.forEach((skill, i) => {
+        const item = document.createElement('div');
+        item.className = 'skill-item';
+        item.innerHTML = `
+          <div class="skill-top">
+            <span class="skill-name">${getLangIcon(skill.name)}${skill.name}</span>
+            <span class="skill-pct" id="skill-pct-${i}">${skill.pct}%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill" id="skill-fill-${i}" style="width:${skill.pct}%"></div></div>
+          <input type="range" class="skill-slider" min="0" max="100" value="${skill.pct}" oninput="updateSkill(${i}, this.value)">
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function updateSkill(index, value) {
+      skills[index].pct = parseInt(value);
+      document.getElementById(`skill-pct-${index}`).textContent = value + '%';
+      document.getElementById(`skill-fill-${index}`).style.width = value + '%';
+      saveSkills();
+    }
+
+    renderSkills();
+
+    const allLanguages = [
+      'ActionScript','Ada','Apex','AppleScript','Assembly','AutoHotkey','AutoIt',
+      'Ballerina','Bash','Batch','Blazor','Brainfuck','C','C#','C++',
+      'Carbon','Clojure','COBOL','CoffeeScript','Crystal','CSS','Cuda',
+      'D','Dart','Delphi','Elixir','Elm','Erlang','F#','Factor','Forth',
+      'Fortran','GDScript','GLSL','Go','Godot','GraphQL','Groovy',
+      'Hack','Haskell','Haxe','HLSL','HTML','Idris','Java','JavaScript',
+      'JSON','Julia','Kotlin','LabVIEW','LaTeX','Less','Lisp','Lua',
+      'Makefile','Markdown','MATLAB','Mojo','Nim','Nix','Objective-C',
+      'OCaml','Odin','Pascal','Perl','PHP','PL/SQL','PostScript',
+      'PowerShell','Prolog','Protocol Buffers','PureScript','Python',
+      'R','Racket','Raku','Reason','ReScript','Ruby','Rust',
+      'SAS','Sass/SCSS','Scala','Scheme','Shell','Smalltalk','Solidity',
+      'SQL','Svelte','Swift','Tcl','Terraform','TOML','TypeScript',
+      'V','Vala','VBA','Verilog','VHDL','Vim Script','Visual Basic',
+      'Vue','WebAssembly','Wolfram','XML','YAML','Zig','Zsh'
+    ];
+
+    function toggleSkillsPicker() {
+      const picker = document.getElementById('skills-picker');
+      picker.classList.toggle('open');
+      if (picker.classList.contains('open')) {
+        document.getElementById('skills-search').value = '';
+        filterLanguages();
+        document.getElementById('skills-search').focus();
+      }
+    }
+
+    function filterLanguages() {
+      const query = document.getElementById('skills-search').value.toLowerCase();
+      const list = document.getElementById('skills-picker-list');
+      list.innerHTML = '';
+      const existing = skills.map(s => s.name.toLowerCase());
+      const filtered = allLanguages.filter(l =>
+        l.toLowerCase().includes(query) && !existing.includes(l.toLowerCase())
+      );
+      filtered.forEach(lang => {
+        const item = document.createElement('div');
+        item.className = 'skills-picker-item';
+        item.innerHTML = `${getLangIcon(lang)} ${lang}`;
+        item.onclick = () => addSkill(lang);
+        list.appendChild(item);
+      });
+    }
+
+    function addSkill(name) {
+      skills.push({ name, pct: 0 });
+      saveSkills();
+      renderSkills();
+      filterLanguages();
+    }
+
+    const YT_API_KEY = 'AIzaSyAClL4yizMIUwG_eJb9u6ySNXygOLZL5eQ';
+
+    async function fetchYouTubeSubs(handle, elementId) {
+      try {
+        const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&forHandle=${handle}&key=${YT_API_KEY}`);
+        const data = await res.json();
+        if (data.items && data.items.length > 0) {
+          const count = parseInt(data.items[0].statistics.subscriberCount);
+          document.getElementById(elementId).textContent = count.toLocaleString();
+        }
+      } catch (e) {
+        document.getElementById(elementId).textContent = '오류';
+      }
+    }
+
+    async function refreshYouTube() {
+      const spinner = document.getElementById('yt-spinner');
+      spinner.classList.add('active');
+      await Promise.all([
+        fetchYouTubeSubs('원소15', 'yt-subs-1'),
+        fetchYouTubeSubs('원소의편집물', 'yt-subs-2')
+      ]);
+      spinner.classList.remove('active');
+    }
+
+    refreshYouTube();
+    setInterval(refreshYouTube, 5000);
+
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    const channels = JSON.parse(localStorage.getItem('channels')) || [];
+
+    function saveChannels() {
+      localStorage.setItem('channels', JSON.stringify(channels));
+    }
+
+    function renderChannels() {
+      const list = document.getElementById('channels-list');
+      if (channels.length === 0) {
+        list.innerHTML = '<div class="channels-empty">채널이 없습니다</div>';
+        return;
+      }
+      list.innerHTML = '';
+      channels.forEach((ch, i) => {
+        const item = document.createElement('div');
+        item.className = 'channel-item';
+        item.innerHTML = `
+          <span class="channel-name">${ch.name}</span>
+          <div class="channel-actions">
+            <a class="channel-go" href="${ch.url}" target="_blank">바로가기</a>
+            <button class="channel-del" onclick="removeChannel(${i})">삭제</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    async function addChannel() {
+      const url = prompt('채널 링크를 입력하세요:');
+      if (!url || !url.trim()) return;
+      let name = '';
+      try {
+        const handle = url.match(/@([^/?\s]+)/);
+        if (handle) {
+          const h = decodeURIComponent(handle[1]);
+          const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&forHandle=${h}&key=${YT_API_KEY}`);
+          const data = await res.json();
+          if (data.items && data.items.length > 0) {
+            name = data.items[0].snippet.title;
+          } else {
+            name = h;
+          }
+        } else {
+          name = url.replace(/https?:\/\/(www\.)?youtube\.com\//,'').replace(/\//g,'');
+        }
+      } catch(e) {
+        const handle = url.match(/@([^/?\s]+)/);
+        name = handle ? decodeURIComponent(handle[1]) : url;
+      }
+      if (!name) name = url;
+      channels.push({ name, url: url.trim() });
+      saveChannels();
+      renderChannels();
+    }
+
+    function removeChannel(index) {
+      channels.splice(index, 1);
+      saveChannels();
+      renderChannels();
+    }
+
+    renderChannels();
+
+    const defaultItems = ['산책하기', '운동하기', '책 읽기', '영화 보기', '음악 듣기', '낮잠 자기', '요리하기', '청소하기', '게임하기', '그림 그리기'];
+    const rouletteItems = JSON.parse(localStorage.getItem('rouletteItems')) || [...defaultItems];
+
+    function saveRoulette() {
+      localStorage.setItem('rouletteItems', JSON.stringify(rouletteItems));
+    }
+
+    function addRouletteItem() {
+      const item = prompt('추가할 항목을 입력하세요:');
+      if (item && item.trim()) {
+        rouletteItems.push(item.trim());
+        saveRoulette();
+        renderList();
+      }
+    }
+
+    function removeRouletteItem(index) {
+      rouletteItems.splice(index, 1);
+      saveRoulette();
+      renderList();
+    }
+
+    function toggleList() {
+      const list = document.getElementById('roulette-list');
+      list.classList.toggle('open');
+      if (list.classList.contains('open')) renderList();
+    }
+
+    function renderList() {
+      const list = document.getElementById('roulette-list');
+      list.innerHTML = '';
+      rouletteItems.forEach((item, i) => {
+        const row = document.createElement('div');
+        row.className = 'roulette-list-item';
+        row.innerHTML = `<span>${item}</span><button class="delete-btn" onclick="removeRouletteItem(${i})">삭제</button>`;
+        list.appendChild(row);
+      });
+    }
+
+    function spinRoulette() {
+      const btn = document.getElementById('roulette-btn');
+      const result = document.getElementById('roulette-result');
+      btn.classList.add('spinning');
+
+      let count = 0;
+      const interval = setInterval(() => {
+        result.textContent = rouletteItems[Math.floor(Math.random() * rouletteItems.length)];
+        count++;
+        if (count > 15) {
+          clearInterval(interval);
+          btn.classList.remove('spinning');
+        }
+      }, 100);
+    }
+  </script>
+</body>
+</html>
