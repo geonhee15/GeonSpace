@@ -247,6 +247,130 @@
 
     .backup-page { padding: 24px 16px; }
 
+    .notes-page { padding: 24px 16px; min-height: 100vh; }
+
+    .notes-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .notes-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2328;
+    }
+
+    .notes-add-btn {
+      padding: 7px 16px;
+      background: #1a7f37;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .notes-add-btn:hover { background: #116329; }
+
+    .notes-board {
+      position: relative;
+      min-height: calc(100vh - 120px);
+    }
+
+    .sticky-note {
+      position: absolute;
+      width: 220px;
+      min-height: 180px;
+      border-radius: 4px;
+      box-shadow: 2px 4px 12px rgba(0,0,0,0.18);
+      display: flex;
+      flex-direction: column;
+      cursor: grab;
+      user-select: none;
+      transition: box-shadow 0.1s;
+    }
+
+    .sticky-note:active { cursor: grabbing; box-shadow: 4px 8px 20px rgba(0,0,0,0.28); }
+
+    .sticky-note-header {
+      padding: 8px 10px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 4px 4px 0 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.5);
+    }
+
+    .sticky-note-color-btns {
+      display: flex;
+      gap: 4px;
+    }
+
+    .sticky-note-color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1.5px solid rgba(0,0,0,0.15);
+    }
+
+    .sticky-note-delete {
+      background: none;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      color: rgba(0,0,0,0.35);
+      line-height: 1;
+      padding: 0 2px;
+    }
+
+    .sticky-note-delete:hover { color: rgba(0,0,0,0.7); }
+
+    .sticky-note-author {
+      padding: 0 10px 4px;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+    }
+
+    .sticky-note-author input {
+      background: none;
+      border: none;
+      border-bottom: 1px dashed rgba(0,0,0,0.2);
+      font-size: 11px;
+      width: 100%;
+      color: rgba(0,0,0,0.55);
+      outline: none;
+      cursor: text;
+    }
+
+    .sticky-note-text {
+      flex: 1;
+      padding: 6px 10px 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      border: none;
+      background: none;
+      resize: none;
+      outline: none;
+      color: rgba(0,0,0,0.8);
+      font-family: inherit;
+      min-height: 120px;
+    }
+
+    .sticky-note-date {
+      padding: 4px 10px 8px;
+      font-size: 10px;
+      color: rgba(0,0,0,0.35);
+      text-align: right;
+    }
+
+    body.dark .notes-title { color: #e6edf3; }
+
     .backup-toolbar {
       display: flex;
       align-items: center;
@@ -1406,6 +1530,7 @@
       <a class="header-tab active" onclick="switchTab('home')">Home</a>
       <a class="header-tab" onclick="switchTab('projects')">Projects</a>
       <a class="header-tab" onclick="switchTab('backup')">Backup Storage</a>
+      <a class="header-tab" onclick="switchTab('notes')">Sticky Notes</a>
     </nav>
     <div class="theme-switch">
       <span id="theme-label">Light</span>
@@ -1536,6 +1661,16 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <div id="page-notes" class="page">
+    <div class="notes-page">
+      <div class="notes-toolbar">
+        <div class="notes-title">Sticky Notes</div>
+        <button class="notes-add-btn" onclick="addNote()">+ 새 메모</button>
+      </div>
+      <div class="notes-board" id="notes-board"></div>
+    </div>
   </div>
 
   <div id="page-projects" class="page">
@@ -2460,7 +2595,126 @@
         document.querySelector('.header-tab:nth-child(3)').classList.add('active');
         document.getElementById('page-backup').classList.add('active');
         renderBackupList();
+      } else if (tab === 'notes') {
+        document.querySelector('.header-tab:nth-child(4)').classList.add('active');
+        document.getElementById('page-notes').classList.add('active');
+        renderNotes();
       }
+    }
+
+    // Sticky Notes
+    const NOTE_COLORS = ['#fef08a','#86efac','#93c5fd','#f9a8d4','#fdba74','#c4b5fd'];
+
+    function loadNotes() {
+      return JSON.parse(localStorage.getItem('stickyNotes') || '[]');
+    }
+
+    function saveNotes(notes) {
+      localStorage.setItem('stickyNotes', JSON.stringify(notes));
+    }
+
+    function addNote() {
+      const notes = loadNotes();
+      const board = document.getElementById('notes-board');
+      const rect = board.getBoundingClientRect();
+      const x = 40 + (notes.length % 5) * 30;
+      const y = 40 + (notes.length % 4) * 30;
+      const note = {
+        id: Date.now(),
+        color: NOTE_COLORS[notes.length % NOTE_COLORS.length],
+        text: '',
+        author: '',
+        x, y,
+        date: new Date().toLocaleDateString('ko-KR')
+      };
+      notes.push(note);
+      saveNotes(notes);
+      renderNotes();
+    }
+
+    function renderNotes() {
+      const board = document.getElementById('notes-board');
+      if (!board) return;
+      board.innerHTML = '';
+      const notes = loadNotes();
+      if (notes.length === 0) {
+        board.innerHTML = '<div style="color:#656d76;font-size:14px;padding:40px">메모가 없습니다. 새 메모를 추가해보세요.</div>';
+        return;
+      }
+      notes.forEach(note => {
+        const el = document.createElement('div');
+        el.className = 'sticky-note';
+        el.style.background = note.color;
+        el.style.left = note.x + 'px';
+        el.style.top = note.y + 'px';
+        el.dataset.id = note.id;
+        el.innerHTML = `
+          <div class="sticky-note-header">
+            <div class="sticky-note-color-btns">
+              ${NOTE_COLORS.map(c => `<div class="sticky-note-color-dot" style="background:${c}" onclick="changeNoteColor(${note.id},'${c}')"></div>`).join('')}
+            </div>
+            <button class="sticky-note-delete" onclick="deleteNote(${note.id})">✕</button>
+          </div>
+          <div class="sticky-note-author">
+            <input type="text" placeholder="작성자" value="${note.author}" onchange="updateNote(${note.id},'author',this.value)" onmousedown="event.stopPropagation()">
+          </div>
+          <textarea class="sticky-note-text" placeholder="메모를 입력하세요..." onchange="updateNote(${note.id},'text',this.value)" onmousedown="event.stopPropagation()">${note.text}</textarea>
+          <div class="sticky-note-date">${note.date}</div>
+        `;
+        makeDraggable(el, note.id);
+        board.appendChild(el);
+      });
+    }
+
+    function updateNote(id, field, value) {
+      const notes = loadNotes();
+      const note = notes.find(n => n.id === id);
+      if (note) { note[field] = value; saveNotes(notes); }
+    }
+
+    function deleteNote(id) {
+      const notes = loadNotes().filter(n => n.id !== id);
+      saveNotes(notes);
+      renderNotes();
+    }
+
+    function changeNoteColor(id, color) {
+      const notes = loadNotes();
+      const note = notes.find(n => n.id === id);
+      if (note) { note.color = color; saveNotes(notes); renderNotes(); }
+    }
+
+    function makeDraggable(el, id) {
+      let startX, startY, startLeft, startTop;
+      el.addEventListener('mousedown', e => {
+        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('sticky-note-color-dot')) return;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseInt(el.style.left) || 0;
+        startTop = parseInt(el.style.top) || 0;
+        el.style.zIndex = 999;
+
+        function onMove(e) {
+          el.style.left = Math.max(0, startLeft + e.clientX - startX) + 'px';
+          el.style.top = Math.max(0, startTop + e.clientY - startY) + 'px';
+        }
+
+        function onUp() {
+          const notes = loadNotes();
+          const note = notes.find(n => n.id === id);
+          if (note) {
+            note.x = parseInt(el.style.left);
+            note.y = parseInt(el.style.top);
+            saveNotes(notes);
+          }
+          el.style.zIndex = '';
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
     }
 
     // Backup Storage
