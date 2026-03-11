@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Geon_Space</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -243,6 +244,117 @@
       color: #656d76;
       font-size: 14px;
     }
+
+    .backup-page { padding: 24px 16px; }
+
+    .backup-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .backup-title { font-size: 20px; font-weight: 600; }
+
+    .backup-now-btn {
+      background: #0969da;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .backup-now-btn:hover { background: #0860ca; }
+    .backup-now-btn:disabled { opacity: 0.5; cursor: default; }
+
+    .backup-status {
+      font-size: 12px;
+      color: #656d76;
+    }
+
+    .backup-date-group { margin-bottom: 24px; }
+
+    .backup-date-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: #656d76;
+      padding: 6px 0;
+      border-bottom: 1px solid #d1d9e0;
+      margin-bottom: 12px;
+    }
+
+    .backup-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .backup-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .backup-thumb {
+      width: 200px;
+      height: 120px;
+      object-fit: cover;
+      object-position: top;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      transition: border-color 0.15s;
+    }
+
+    .backup-thumb:hover { border-color: #0969da; }
+
+    .backup-time {
+      font-size: 11px;
+      color: #656d76;
+    }
+
+    .backup-empty {
+      color: #656d76;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .backup-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .backup-modal.open { display: flex; }
+
+    .backup-modal img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 6px;
+      object-fit: contain;
+    }
+
+    .backup-modal-close {
+      background: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 20px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    body.dark .backup-date-header { border-color: #30363d; color: #8b949e; }
+    body.dark .backup-thumb { border-color: #30363d; }
 
     .site-desc {
       font-size: 10px;
@@ -1177,6 +1289,7 @@
     <nav class="header-tabs">
       <a class="header-tab active" onclick="switchTab('home')">Home</a>
       <a class="header-tab" onclick="switchTab('projects')">Projects</a>
+      <a class="header-tab" onclick="switchTab('backup')">Backup Storage</a>
     </nav>
     <div class="theme-switch">
       <span id="theme-label">Light</span>
@@ -1297,6 +1410,22 @@
         <div class="projects-loading">레포지토리 불러오는 중...</div>
       </div>
     </div>
+  </div>
+
+  <div id="page-backup" class="page">
+    <div class="backup-page">
+      <div class="backup-toolbar">
+        <div class="backup-title">Backup Storage</div>
+        <button class="backup-now-btn" id="backup-now-btn" onclick="takeBackup(true)">지금 백업</button>
+        <span class="backup-status" id="backup-status">매 시간 자동 저장</span>
+      </div>
+      <div id="backup-list"><div class="backup-empty">아직 백업이 없습니다.</div></div>
+    </div>
+  </div>
+
+  <div class="backup-modal" id="backup-modal" onclick="closeBackupModal()">
+    <img id="backup-modal-img" src="" alt="">
+    <button class="backup-modal-close" onclick="closeBackupModal()">닫기</button>
   </div>
 
   <script>
@@ -2124,8 +2253,119 @@
         document.querySelector('.header-tab:nth-child(2)').classList.add('active');
         document.getElementById('page-projects').classList.add('active');
         fetchRepos();
+      } else if (tab === 'backup') {
+        document.querySelector('.header-tab:nth-child(3)').classList.add('active');
+        document.getElementById('page-backup').classList.add('active');
+        renderBackupList();
       }
     }
+
+    // Backup Storage
+    let backupDB;
+
+    function initBackupDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open('GeonSpaceBackup', 1);
+        req.onupgradeneeded = e => {
+          e.target.result.createObjectStore('backups', { keyPath: 'id', autoIncrement: true });
+        };
+        req.onsuccess = e => { backupDB = e.target.result; resolve(); };
+        req.onerror = reject;
+      });
+    }
+
+    async function takeBackup(manual = false) {
+      const btn = document.getElementById('backup-now-btn');
+      const status = document.getElementById('backup-status');
+      if (btn) btn.disabled = true;
+      if (status) status.textContent = '캡처 중...';
+
+      // 홈 탭으로 전환 후 캡처
+      const prevActive = document.querySelector('.page.active')?.id;
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-home').classList.add('active');
+
+      await new Promise(r => setTimeout(r, 300));
+
+      try {
+        const canvas = await html2canvas(document.body, {
+          useCORS: true,
+          allowTaint: true,
+          scrollY: -window.scrollY,
+          windowWidth: document.documentElement.scrollWidth,
+          windowHeight: document.documentElement.scrollHeight,
+          height: document.documentElement.scrollHeight,
+          ignoreElements: el => el.id === 'login-overlay'
+        });
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+        const timestamp = new Date().toISOString();
+
+        const tx = backupDB.transaction('backups', 'readwrite');
+        tx.objectStore('backups').add({ timestamp, dataUrl });
+        tx.oncomplete = () => {
+          if (status) status.textContent = `마지막 백업: ${new Date().toLocaleTimeString('ko-KR')}`;
+          if (btn) btn.disabled = false;
+          if (document.getElementById('page-backup').classList.contains('active')) renderBackupList();
+        };
+      } catch(e) {
+        if (status) status.textContent = '백업 실패';
+        if (btn) btn.disabled = false;
+      }
+
+      // 이전 탭 복원
+      if (prevActive) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(prevActive).classList.add('active');
+      }
+    }
+
+    function renderBackupList() {
+      if (!backupDB) return;
+      const el = document.getElementById('backup-list');
+      const tx = backupDB.transaction('backups', 'readonly');
+      const req = tx.objectStore('backups').getAll();
+      req.onsuccess = () => {
+        const backups = req.result.reverse();
+        if (!backups.length) {
+          el.innerHTML = '<div class="backup-empty">아직 백업이 없습니다.<br>매 시간 자동으로 저장되며, 지금 백업 버튼으로 수동 저장도 가능합니다.</div>';
+          return;
+        }
+        const grouped = {};
+        backups.forEach(b => {
+          const date = new Date(b.timestamp).toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+          if (!grouped[date]) grouped[date] = [];
+          grouped[date].push(b);
+        });
+        el.innerHTML = Object.entries(grouped).map(([date, items]) => `
+          <div class="backup-date-group">
+            <div class="backup-date-header">${date} · ${items.length}개</div>
+            <div class="backup-items">
+              ${items.map(item => `
+                <div class="backup-item" onclick="viewBackup('${item.dataUrl}')">
+                  <img class="backup-thumb" src="${item.dataUrl}" alt="">
+                  <div class="backup-time">${new Date(item.timestamp).toLocaleTimeString('ko-KR')}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('');
+      };
+    }
+
+    function viewBackup(dataUrl) {
+      document.getElementById('backup-modal-img').src = dataUrl;
+      document.getElementById('backup-modal').classList.add('open');
+    }
+
+    function closeBackupModal() {
+      document.getElementById('backup-modal').classList.remove('open');
+    }
+
+    initBackupDB().then(() => {
+      // 1시간마다 자동 백업
+      setInterval(() => takeBackup(), 60 * 60 * 1000);
+    });
 
     let reposLoaded = false;
     function fetchRepos() {
