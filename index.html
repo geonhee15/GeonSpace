@@ -1067,9 +1067,108 @@
       background: #0969da;
       border-radius: 50%;
     }
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: #0d1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .login-box {
+      width: 340px;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .login-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #e6edf3;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      font-size: 12px;
+      color: #8b949e;
+      text-align: center;
+      margin-top: -10px;
+    }
+
+    .login-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .login-field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #8b949e;
+    }
+
+    .login-field input {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: #e6edf3;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .login-field input:focus {
+      border-color: #58a6ff;
+    }
+
+    .login-btn {
+      background: #238636;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.15s;
+    }
+
+    .login-btn:hover { background: #2ea043; }
+
+    .login-error {
+      font-size: 12px;
+      color: #f85149;
+      text-align: center;
+      min-height: 16px;
+    }
   </style>
 </head>
 <body>
+  <div class="login-overlay" id="login-overlay">
+    <div class="login-box">
+      <div class="login-title">Geon_Space</div>
+      <div class="login-subtitle">김건희의 퍼스널 워크스페이스</div>
+      <div class="login-field">
+        <label>ID</label>
+        <input type="text" id="login-id" placeholder="아이디 입력" autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="login-error" id="login-error"></div>
+      <button class="login-btn" onclick="doLogin()">로그인</button>
+    </div>
+  </div>
   <header>
     <div class="header-left">
       <a href="/" class="site-name">Geon_Space</a>
@@ -1201,6 +1300,23 @@
   </div>
 
   <script>
+    // Login
+    function doLogin() {
+      const id = document.getElementById('login-id').value;
+      const pw = document.getElementById('login-pw').value;
+      if (id === 'Geonhee' && pw === 'Geonhee') {
+        sessionStorage.setItem('auth', '1');
+        document.getElementById('login-overlay').style.display = 'none';
+      } else {
+        document.getElementById('login-error').textContent = '아이디 또는 비밀번호가 틀렸습니다.';
+        document.getElementById('login-pw').value = '';
+        document.getElementById('login-pw').focus();
+      }
+    }
+
+    if (sessionStorage.getItem('auth') === '1') {
+      document.getElementById('login-overlay').style.display = 'none';
+    }
     // 오늘의 명언 (날짜 기반으로 매일 바뀜)
     const quotes = [
       { text: "인생에서 가장 큰 영광은 넘어지지 않는 것이 아니라, 넘어질 때마다 일어서는 것이다.", author: "넬슨 만델라" },
