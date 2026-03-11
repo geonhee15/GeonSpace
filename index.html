@@ -26,10 +26,222 @@
       border-bottom: 1px solid #d1d9e0;
     }
 
+    .theme-switch {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #656d76;
+      user-select: none;
+    }
+
+    .theme-toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+
+    .theme-toggle input { display: none; }
+
+    .theme-toggle-track {
+      position: absolute;
+      inset: 0;
+      background: #d1d9e0;
+      border-radius: 11px;
+      transition: background 0.2s;
+    }
+
+    .theme-toggle input:checked + .theme-toggle-track { background: #1f2328; }
+
+    .theme-toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle input:checked ~ .theme-toggle-thumb { transform: translateX(18px); }
+
+    /* Dark mode */
+    body.dark {
+      background: #0d1117;
+      color: #e6edf3;
+    }
+    body.dark header { border-color: #30363d; background: #161b22; }
+    body.dark .site-name { color: #e6edf3; }
+    body.dark .site-desc { color: #8b949e; }
+    body.dark .header-tab { color: #8b949e; }
+    body.dark .header-tab:hover, body.dark .header-tab.active { background: #21262d; color: #e6edf3; }
+    body.dark .clock { color: #e6edf3; }
+    body.dark .calendar,
+    body.dark .skills-box,
+    body.dark .hacking-box,
+    body.dark .youtube-box,
+    body.dark .channels-box,
+    body.dark .roulette-box,
+    body.dark .playlist-box,
+    body.dark .weather-box,
+    body.dark .project-card { border-color: #30363d; }
+    body.dark .calendar-header,
+    body.dark .skills-header,
+    body.dark .hacking-header,
+    body.dark .youtube-header,
+    body.dark .channels-header,
+    body.dark .roulette-header,
+    body.dark .playlist-header,
+    body.dark .weather-header,
+    body.dark .skills-add-section,
+    body.dark .hacking-add-section,
+    body.dark .roulette-add,
+    body.dark .channels-add { border-color: #30363d; background: #161b22; }
+    body.dark .calendar-nav button,
+    body.dark .skills-add-btn,
+    body.dark .hacking-add-btn,
+    body.dark .roulette-add button,
+    body.dark .channels-add button { color: #8b949e; }
+    body.dark .calendar-grid .day { border-color: #21262d; color: #e6edf3; }
+    body.dark .calendar-grid .day:hover { background: #21262d; }
+    body.dark .calendar-grid .day-name { color: #8b949e; border-color: #30363d; }
+    body.dark .skill-bar { background: #21262d; }
+    body.dark .skills-search { background: #0d1117; border-color: #30363d; color: #e6edf3; }
+    body.dark .skills-picker-item:hover { background: #21262d; }
+    body.dark .yt-channel-name { color: #e6edf3; }
+    body.dark .yt-subs { color: #e6edf3; }
+    body.dark .yt-label, body.dark .yt-channel-name:hover { color: #58a6ff; }
+    body.dark .channel-item { border-color: #21262d; }
+    body.dark .roulette-result { color: #e6edf3; }
+    body.dark .roulette-list-item { border-color: #21262d; color: #e6edf3; }
+    body.dark .playlist-video-card { color: #e6edf3; border-color: #21262d; }
+    body.dark .playlist-video-card:hover,
+    body.dark .playlist-open-btn:hover { background: #21262d; }
+    body.dark .hack-category { border-color: #21262d; }
+    body.dark .hack-category-header:hover { background: #21262d; }
+    body.dark .weather-current,
+    body.dark .weather-graph,
+    body.dark .weather-hours { border-color: #21262d; }
+    body.dark .weather-day.today-day { background: #21262d; }
+    body.dark .project-card:hover { border-color: #58a6ff; }
+    body.dark .project-name { color: #58a6ff; }
+    body.dark .theme-switch { color: #8b949e; }
+    body.dark .projects-page { background: #0d1117; }
+
     .header-left {
       display: flex;
       flex-direction: column;
       gap: 2px;
+    }
+
+    .header-tabs {
+      display: flex;
+      align-items: center;
+      margin-left: 80px;
+      gap: 4px;
+      height: 100%;
+    }
+
+    .header-tab {
+      display: flex;
+      align-items: center;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #656d76;
+      text-decoration: none;
+      border-radius: 6px;
+      cursor: pointer;
+      height: 36px;
+      transition: background 0.15s;
+    }
+
+    .header-tab:hover {
+      background: #eaeef2;
+      color: #1f2328;
+    }
+
+    .header-tab.active {
+      color: #1f2328;
+      font-weight: 600;
+      background: #eaeef2;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .projects-page {
+      padding: 24px 16px;
+    }
+
+    .projects-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .project-card {
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      padding: 16px;
+      transition: border-color 0.15s;
+    }
+
+    .project-card:hover {
+      border-color: #0969da;
+    }
+
+    .project-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0969da;
+      text-decoration: none;
+    }
+
+    .project-name:hover {
+      text-decoration: underline;
+    }
+
+    .project-desc {
+      font-size: 13px;
+      color: #656d76;
+      margin-top: 6px;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #656d76;
+    }
+
+    .project-lang-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .projects-loading {
+      color: #656d76;
+      font-size: 14px;
     }
 
     .site-desc {
@@ -46,13 +258,46 @@
       text-decoration: none;
     }
 
-    .clock {
+    .quote-box {
       margin: 20px 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .quote-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #656d76;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .quote-text {
+      font-size: 15px;
+      color: #1f2328;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .quote-author {
+      font-size: 12px;
+      color: #656d76;
+      margin-top: 2px;
+    }
+
+    body.dark .quote-text { color: #e6edf3; }
+    body.dark .quote-label, body.dark .quote-author { color: #8b949e; }
+
+    .clock {
+      margin: 8px 16px 0;
       font-size: 32px;
       font-weight: 600;
       color: #1f2328;
       font-variant-numeric: tabular-nums;
     }
+
+    body.dark .clock { color: #e6edf3; }
 
     .calendar {
       margin: 24px 16px;
@@ -338,6 +583,95 @@
       flex-direction: column;
     }
 
+    .hacking-box {
+      width: 22%;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .hacking-header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .hacking-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hack-category {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .hack-category:last-child { border-bottom: none; }
+
+    .hack-category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1f2328;
+      user-select: none;
+      transition: background 0.1s;
+    }
+
+    .hack-category-header:hover { background: #f6f8fa; }
+
+    .hack-category-arrow {
+      font-size: 10px;
+      color: #656d76;
+      transition: transform 0.2s;
+    }
+
+    .hack-category-arrow.open { transform: rotate(180deg); }
+
+    .hack-category-body {
+      display: none;
+      padding: 8px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hack-category-body.collapsed { display: none; }
+
+    .hacking-bar-fill {
+      height: 100%;
+      background: #cf222e;
+      border-radius: 4px;
+      transition: width 0.2s;
+    }
+
+    .hacking-add-section {
+      padding: 8px 16px;
+      border-top: 1px solid #d1d9e0;
+    }
+
+    .hacking-add-btn {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: #656d76;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hacking-add-btn:hover { color: #cf222e; }
+
+    .hacking-picker {
+      display: none;
+      padding: 8px 16px 12px;
+      border-top: 1px solid #d1d9e0;
+    }
+
+    .hacking-picker.open { display: block; }
+
     .skills-picker-item {
       padding: 4px 6px;
       font-size: 12px;
@@ -358,7 +692,6 @@
     }
 
     .channels-box {
-      margin: 24px 16px;
       width: 22%;
       border: 1px solid #d1d9e0;
       border-radius: 6px;
@@ -456,7 +789,6 @@
     }
 
     .roulette-box {
-      margin: 24px 16px;
       width: 22%;
       border: 1px solid #d1d9e0;
       border-radius: 6px;
@@ -555,6 +887,177 @@
       color: #a40e26;
     }
 
+    .playlist-box {
+      margin: 0 16px 24px;
+      width: 360px;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .playlist-header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #d1d9e0;
+      background: #f6f8fa;
+    }
+
+    .playlist-grid {
+      display: flex;
+      flex-direction: column;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .playlist-video-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      text-decoration: none;
+      color: #1f2328;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.1s;
+    }
+
+    .playlist-video-card:last-child { border-bottom: none; }
+    .playlist-video-card:hover { background: #f6f8fa; }
+
+    .playlist-video-thumb {
+      width: 96px;
+      height: 54px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+      background: #e0e0e0;
+    }
+
+    .playlist-video-title {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .playlist-video-channel {
+      font-size: 11px;
+      color: #656d76;
+      margin-top: 3px;
+    }
+
+    .playlist-loading {
+      padding: 16px;
+      font-size: 13px;
+      color: #656d76;
+    }
+
+    .weather-box {
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+      width: 340px;
+    }
+
+    .weather-header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #d1d9e0;
+      background: #f6f8fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .weather-location {
+      font-size: 12px;
+      color: #656d76;
+      font-weight: 400;
+    }
+
+    .weather-current {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      gap: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .weather-icon { font-size: 48px; line-height: 1; }
+
+    .weather-temp {
+      font-size: 42px;
+      font-weight: 700;
+      color: #1f2328;
+      line-height: 1;
+    }
+
+    .weather-temp span {
+      font-size: 18px;
+      font-weight: 400;
+      color: #656d76;
+    }
+
+    .weather-desc {
+      font-size: 13px;
+      color: #656d76;
+      margin-top: 4px;
+    }
+
+    .weather-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-left: auto;
+      text-align: right;
+      font-size: 12px;
+      color: #656d76;
+    }
+
+    .weather-graph {
+      padding: 12px 16px 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .weather-graph svg { width: 100%; display: block; }
+
+    .weather-hours {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 16px 8px;
+      font-size: 11px;
+      color: #656d76;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .weather-daily {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px 12px;
+      gap: 4px;
+    }
+
+    .weather-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      min-width: 44px;
+      font-size: 11px;
+      color: #1f2328;
+    }
+
+    .weather-day.today-day { background: #eaeef2; }
+    .weather-day-name { font-weight: 600; }
+    .weather-day-icon { font-size: 20px; }
+    .weather-day-temps { color: #656d76; }
+
     .calendar-grid .day.today span {
       display: inline-flex;
       align-items: center;
@@ -572,8 +1075,26 @@
       <a href="/" class="site-name">Geon_Space</a>
       <p class="site-desc">김건희의 퍼스널 워크스페이스</p>
     </div>
+    <nav class="header-tabs">
+      <a class="header-tab active" onclick="switchTab('home')">Home</a>
+      <a class="header-tab" onclick="switchTab('projects')">Projects</a>
+    </nav>
+    <div class="theme-switch">
+      <span id="theme-label">Light</span>
+      <label class="theme-toggle">
+        <input type="checkbox" id="theme-toggle-input" onchange="toggleTheme()">
+        <div class="theme-toggle-track"></div>
+        <div class="theme-toggle-thumb"></div>
+      </label>
+    </div>
   </header>
 
+  <div id="page-home" class="page active">
+  <div class="quote-box">
+    <div class="quote-label">오늘의 명언</div>
+    <div class="quote-text" id="quote-text"></div>
+    <div class="quote-author" id="quote-author"></div>
+  </div>
   <div class="clock" id="clock">00:00:00</div>
 
   <div class="widgets-row">
@@ -600,6 +1121,18 @@
       </div>
     </div>
 
+    <div class="hacking-box">
+      <div class="hacking-header">해킹 숙련도</div>
+      <div class="hacking-list" id="hacking-list"></div>
+      <div class="hacking-add-section">
+        <button class="hacking-add-btn" onclick="toggleHackingPicker()">+ 기술 추가</button>
+      </div>
+      <div class="hacking-picker" id="hacking-picker">
+        <input type="text" class="skills-search" id="hacking-search" placeholder="기술 검색..." oninput="filterHacking()">
+        <div class="skills-picker-list" id="hacking-picker-list"></div>
+      </div>
+    </div>
+
     <div class="youtube-box">
       <div class="youtube-header"><span>YouTube</span><div class="yt-spinner" id="yt-spinner"></div></div>
       <div class="youtube-channels">
@@ -617,28 +1150,101 @@
     </div>
   </div>
 
-  <div class="channels-box">
-    <div class="channels-header">오마이갓 채널 리스트</div>
-    <div class="channels-list" id="channels-list"></div>
-    <div class="channels-add">
-      <button onclick="addChannel()">+ 채널 추가</button>
+  <div style="display:flex;gap:16px;margin:0 16px 24px;flex-wrap:wrap;align-items:flex-start">
+    <div class="channels-box">
+      <div class="channels-header">오마이갓 채널 리스트</div>
+      <div class="channels-list" id="channels-list"></div>
+      <div class="channels-add">
+        <button onclick="addChannel()">+ 채널 추가</button>
+      </div>
+    </div>
+
+    <div class="weather-box">
+      <div class="weather-header">
+        <span>날씨</span>
+        <span class="weather-location" id="weather-location">위치 감지 중...</span>
+      </div>
+      <div id="weather-body">
+        <div style="padding:24px;color:#656d76;font-size:13px">불러오는 중...</div>
+      </div>
+    </div>
+
+    <div class="roulette-box">
+      <div class="roulette-header">할거없을 때 룰렛</div>
+      <div class="roulette-content">
+        <div class="roulette-result" id="roulette-result">?</div>
+        <button class="roulette-btn" id="roulette-btn" onclick="spinRoulette()">돌리기</button>
+      </div>
+      <div class="roulette-add">
+        <button onclick="addRouletteItem()">+ 할거 추가</button>
+        <button onclick="toggleList()" style="margin-left:8px">목록 보기</button>
+      </div>
+      <div class="roulette-list" id="roulette-list"></div>
+    </div>
+
+    <div class="playlist-box">
+      <div class="playlist-header">플레이리스트 · 좋아하는 음매드</div>
+      <div class="playlist-grid" id="playlist-list">
+        <div class="playlist-loading">불러오는 중...</div>
+      </div>
     </div>
   </div>
+  </div>
 
-  <div class="roulette-box">
-    <div class="roulette-header">할거없을 때 룰렛</div>
-    <div class="roulette-content">
-      <div class="roulette-result" id="roulette-result">?</div>
-      <button class="roulette-btn" id="roulette-btn" onclick="spinRoulette()">돌리기</button>
+  <div id="page-projects" class="page">
+    <div class="projects-page">
+      <div class="projects-title">My Repositories</div>
+      <div class="projects-list" id="projects-list">
+        <div class="projects-loading">레포지토리 불러오는 중...</div>
+      </div>
     </div>
-    <div class="roulette-add">
-      <button onclick="addRouletteItem()">+ 할거 추가</button>
-      <button onclick="toggleList()" style="margin-left:8px">목록 보기</button>
-    </div>
-    <div class="roulette-list" id="roulette-list"></div>
   </div>
 
   <script>
+    // 오늘의 명언 (날짜 기반으로 매일 바뀜)
+    const quotes = [
+      { text: "인생에서 가장 큰 영광은 넘어지지 않는 것이 아니라, 넘어질 때마다 일어서는 것이다.", author: "넬슨 만델라" },
+      { text: "시작이 반이다.", author: "아리스토텔레스" },
+      { text: "할 수 있다고 믿으면 반은 이미 이룬 것이다.", author: "시어도어 루스벨트" },
+      { text: "성공은 열정을 잃지 않고 실패에서 실패로 걸어가는 것이다.", author: "윈스턴 처칠" },
+      { text: "지식이 힘이다.", author: "프랜시스 베이컨" },
+      { text: "천 리 길도 한 걸음부터.", author: "노자" },
+      { text: "불가능이란 것은 노력하지 않는 자의 핑계다.", author: "나폴레옹" },
+      { text: "당신이 할 수 있다고 생각하든, 할 수 없다고 생각하든 당신이 옳다.", author: "헨리 포드" },
+      { text: "가장 어두운 밤도 끝이 있고 태양은 다시 뜬다.", author: "빅토르 위고" },
+      { text: "오늘 할 수 있는 일을 내일로 미루지 마라.", author: "벤저민 프랭클린" },
+      { text: "실패는 성공의 어머니다.", author: "토마스 에디슨" },
+      { text: "배움에는 끝이 없다.", author: "공자" },
+      { text: "꿈을 꾸는 사람만이 그 꿈을 이룰 수 있다.", author: "오리슨 스웨트 마든" },
+      { text: "지금 이 순간이 당신의 남은 인생 중 가장 젊은 날이다.", author: "익명" },
+      { text: "두려움 없이 살아라.", author: "조지 버나드 쇼" },
+      { text: "작은 일에도 최선을 다하라. 큰 일도 결국 작은 일들로 이루어진다.", author: "레이 크록" },
+      { text: "기회는 준비된 자에게 찾아온다.", author: "루이 파스퇴르" },
+      { text: "포기하지 마라. 고통은 언젠가 사라지지만 포기는 영원히 남는다.", author: "익명" },
+      { text: "나쁜 코드는 결국 나쁜 결과를 낳는다.", author: "로버트 마틴" },
+      { text: "해킹은 창의적으로 규칙을 뛰어넘는 것이다.", author: "리누스 토르발스" },
+      { text: "가장 단순한 해결책이 보통 가장 좋은 해결책이다.", author: "오컴의 면도날" },
+      { text: "코드는 시처럼 써야 한다. 아름답고 간결하게.", author: "익명" },
+      { text: "모든 버그는 아직 발견되지 않은 기능이다.", author: "익명 개발자" },
+      { text: "지금 자면 꿈을 꾸지만, 지금 공부하면 꿈을 이룬다.", author: "익명" },
+      { text: "성공한 사람을 보고 싶으면 거울을 봐라.", author: "익명" },
+      { text: "인내는 쓰고 그 열매는 달다.", author: "장 자크 루소" },
+      { text: "나는 생각한다, 고로 존재한다.", author: "르네 데카르트" },
+      { text: "변화를 두려워하는 자는 아무것도 이룰 수 없다.", author: "익명" },
+      { text: "인생은 자전거 타기와 같다. 균형을 유지하려면 계속 움직여야 한다.", author: "알베르트 아인슈타인" },
+      { text: "오늘 하루도 최선을 다해 살아라.", author: "익명" },
+    ];
+
+    function initQuote() {
+      const today = new Date();
+      const idx = (today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate()) % quotes.length;
+      const q = quotes[idx];
+      document.getElementById('quote-text').textContent = `"${q.text}"`;
+      document.getElementById('quote-author').textContent = `— ${q.author}`;
+    }
+
+    initQuote();
+
     let currentDate = new Date();
 
     function renderCalendar() {
@@ -842,6 +1448,322 @@
       filterLanguages();
     }
 
+    // Hacking Skills
+    const hackingCategories = {
+      'Recon / Enumeration': [
+        'Nmap','Gobuster','ffuf','feroxbuster','dirbuster','wfuzz',
+        'amass','sublist3r','Recon-ng','theHarvester','whatweb','Shodan','Maltego','OSINT'
+      ],
+      'Network Tools': [
+        'netcat (ncat)','socat','tcpdump','Wireshark','Aircrack-ng',
+        'wifite','reaver','Responder','chisel'
+      ],
+      'Web Attacks': [
+        'SQL Injection','XSS (Cross-Site Scripting)','CSRF','Command Injection',
+        'Directory Traversal','SSRF','XXE Injection','IDOR','Open Redirect',
+        'SSTI','NoSQL Injection','LDAP Injection','XPATH Injection',
+        'JWT Manipulation','OAuth Abuse','SAML Bypass','2FA Bypass',
+        'Session Hijacking','Cookie Stealing','Clickjacking',
+        'CORS Misconfiguration','WebSocket Attack','Deserialization'
+      ],
+      'Exploitation Tools': [
+        'Metasploit','Burp Suite','sqlmap','nikto','searchsploit',
+        'Exploit Development','Zero-Day Exploit','CVE Exploitation'
+      ],
+      'Post-Exploitation': [
+        'Reverse Shell','Bind Shell','Web Shell','Backdoor',
+        'Privilege Escalation','linpeas','winpeas','pspy',
+        'Mimikatz','BloodHound','PowerShell Empire','Cobalt Strike',
+        'Pass-the-Hash','Pass-the-Ticket','Kerberoasting',
+        'DCSync','LLMNR Poisoning','SMB Relay','Active Directory Attack'
+      ],
+      'Password Attacks': [
+        'Brute Force','Credential Stuffing','Password Spraying',
+        'Rainbow Table','John the Ripper','Hashcat','Hydra','Medusa'
+      ],
+      'Binary Exploitation': [
+        'Buffer Overflow','Heap Overflow','Format String Attack',
+        'Use-After-Free','ROP (Return-Oriented Programming)',
+        'Shellcode','Ret2libc','Fuzzing','Race Condition'
+      ],
+      'Reverse Engineering': [
+        'Static Analysis','Dynamic Analysis','Malware Analysis',
+        'APK Reversing','Frida Hooking','Firmware Analysis',
+        'Ghidra','IDA Pro','x64dbg'
+      ],
+      'Network Attacks': [
+        'Network Sniffing','ARP Spoofing','DNS Spoofing',
+        'Man-in-the-Middle','SSL Stripping','Packet Injection','Evil Twin'
+      ],
+      'Social Engineering': [
+        'Phishing','Spear Phishing','Vishing','Pretexting','Baiting'
+      ],
+      'Mobile / Hardware': [
+        'Android Hacking','iOS Hacking','IoT Hacking',
+        'Hardware Hacking','Side-Channel Attack'
+      ],
+      'Crypto & Forensics': [
+        'Steganography','Cryptanalysis','Forensics','Log Analysis'
+      ],
+      'CTF': [
+        'Pwn','Web Exploitation','Crypto Challenge','Misc','Reversing'
+      ]
+    };
+
+    const hackingSkills = JSON.parse(localStorage.getItem('hackingSkills')) || [];
+
+    function saveHackingSkills() {
+      localStorage.setItem('hackingSkills', JSON.stringify(hackingSkills));
+    }
+
+    function renderHackingSkills() {
+      const list = document.getElementById('hacking-list');
+      list.innerHTML = '';
+      const grouped = {};
+      hackingSkills.forEach((skill, i) => {
+        const cat = skill.category || '기타';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push({ ...skill, idx: i });
+      });
+      Object.entries(grouped).forEach(([cat, items]) => {
+        const catEl = document.createElement('div');
+        catEl.className = 'hack-category';
+        catEl.innerHTML = `
+          <div class="hack-category-header" onclick="toggleHackCat(this)">
+            <span>${cat} <span style="color:#656d76;font-weight:400">(${items.length})</span></span>
+            <span class="hack-category-arrow open">▲</span>
+          </div>
+          <div class="hack-category-body">
+            ${items.map(skill => `
+              <div class="skill-item">
+                <div class="skill-top">
+                  <span class="skill-name">${skill.name}</span>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span class="skill-pct" id="hskill-pct-${skill.idx}">${skill.pct}%</span>
+                    <button onclick="removeHackingSkill(${skill.idx})" style="background:none;border:none;color:#656d76;cursor:pointer;font-size:12px;padding:0;line-height:1" title="삭제">✕</button>
+                  </div>
+                </div>
+                <div class="skill-bar"><div class="hacking-bar-fill" id="hskill-fill-${skill.idx}" style="width:${skill.pct}%"></div></div>
+                <input type="range" class="skill-slider" min="0" max="100" value="${skill.pct}" oninput="updateHackingSkill(${skill.idx}, this.value)">
+              </div>
+            `).join('')}
+          </div>
+        `;
+        list.appendChild(catEl);
+      });
+    }
+
+    function toggleHackCat(header) {
+      const body = header.nextElementSibling;
+      const arrow = header.querySelector('.hack-category-arrow');
+      body.classList.toggle('collapsed');
+      arrow.classList.toggle('open');
+    }
+
+    function removeHackingSkill(index) {
+      hackingSkills.splice(index, 1);
+      saveHackingSkills();
+      renderHackingSkills();
+    }
+
+    function updateHackingSkill(index, value) {
+      hackingSkills[index].pct = parseInt(value);
+      document.getElementById(`hskill-pct-${index}`).textContent = value + '%';
+      document.getElementById(`hskill-fill-${index}`).style.width = value + '%';
+      saveHackingSkills();
+    }
+
+    renderHackingSkills();
+
+    function toggleHackingPicker() {
+      const picker = document.getElementById('hacking-picker');
+      picker.classList.toggle('open');
+      if (picker.classList.contains('open')) {
+        document.getElementById('hacking-search').value = '';
+        filterHacking();
+        document.getElementById('hacking-search').focus();
+      }
+    }
+
+    function filterHacking() {
+      const query = document.getElementById('hacking-search').value.toLowerCase();
+      const pickerList = document.getElementById('hacking-picker-list');
+      pickerList.innerHTML = '';
+      const existing = hackingSkills.map(s => s.name.toLowerCase());
+      Object.entries(hackingCategories).forEach(([cat, techs]) => {
+        const filtered = techs.filter(t => t.toLowerCase().includes(query) && !existing.includes(t.toLowerCase()));
+        if (!filtered.length) return;
+        const catLabel = document.createElement('div');
+        catLabel.style.cssText = 'font-size:10px;font-weight:700;color:#656d76;padding:6px 4px 2px;text-transform:uppercase;letter-spacing:0.5px';
+        catLabel.textContent = cat;
+        pickerList.appendChild(catLabel);
+        filtered.forEach(tech => {
+          const item = document.createElement('div');
+          item.className = 'skills-picker-item';
+          item.textContent = tech;
+          item.onclick = () => addHackingSkill(tech, cat);
+          pickerList.appendChild(item);
+        });
+      });
+    }
+
+    function addHackingSkill(name, category) {
+      hackingSkills.push({ name, category, pct: 0 });
+      saveHackingSkills();
+      renderHackingSkills();
+      filterHacking();
+    }
+
+    // Weather
+    const weatherCodeMap = {
+      0:['☀️','맑음'], 1:['🌤️','대체로 맑음'], 2:['⛅','부분적으로 흐림'], 3:['☁️','흐림'],
+      45:['🌫️','안개'], 48:['🌫️','안개'],
+      51:['🌦️','이슬비'], 53:['🌦️','이슬비'], 55:['🌦️','이슬비'],
+      61:['🌧️','비'], 63:['🌧️','비'], 65:['🌧️','비'],
+      71:['🌨️','눈'], 73:['🌨️','눈'], 75:['🌨️','눈'], 77:['❄️','눈'],
+      80:['🌦️','소나기'], 81:['🌦️','소나기'], 82:['⛈️','강한 소나기'],
+      85:['🌨️','눈 소나기'], 86:['🌨️','눈 소나기'],
+      95:['⛈️','뇌우'], 96:['⛈️','뇌우'], 99:['⛈️','뇌우']
+    };
+    const dayNames = ['일','월','화','수','목','금','토'];
+
+    function initWeather() {
+      if (!navigator.geolocation) {
+        document.getElementById('weather-body').innerHTML = '<div style="padding:16px;font-size:13px;color:#656d76">위치 접근 불가</div>';
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        fetchWeather(lat, lon);
+        // Reverse geocode
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ko`)
+          .then(r => r.json())
+          .then(d => {
+            const addr = d.address;
+            const loc = addr.borough || addr.suburb || addr.city_district || addr.city || '';
+            document.getElementById('weather-location').textContent = loc;
+          }).catch(() => {});
+      }, () => {
+        // Default: Songdo, Incheon
+        fetchWeather(37.3833, 126.6558);
+        document.getElementById('weather-location').textContent = '송도동';
+      });
+    }
+
+    function fetchWeather(lat, lon) {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,precipitation_probability,wind_speed_10m,weather_code&hourly=temperature_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul&forecast_days=7`;
+      fetch(url).then(r => r.json()).then(data => {
+        const cur = data.current;
+        const [icon, desc] = weatherCodeMap[cur.weather_code] || ['🌡️','--'];
+        const temp = Math.round(cur.temperature_2m);
+        const hum = cur.relative_humidity_2m;
+        const precip = cur.precipitation_probability;
+        const wind = cur.wind_speed_10m;
+
+        // Hourly: next 8 steps
+        const nowHour = new Date().getHours();
+        const allHourlyTemps = data.hourly.temperature_2m;
+        const allHourlyTimes = data.hourly.time;
+        const startIdx = allHourlyTimes.findIndex(t => new Date(t).getHours() === nowHour && t.startsWith(new Date().toISOString().slice(0,10)));
+        const slice = startIdx >= 0 ? allHourlyTemps.slice(startIdx, startIdx + 8) : allHourlyTemps.slice(0, 8);
+        const sliceTimes = startIdx >= 0 ? allHourlyTimes.slice(startIdx, startIdx + 8) : allHourlyTimes.slice(0, 8);
+
+        // SVG graph
+        const W = 308, H = 60, pad = 10;
+        const minT = Math.min(...slice) - 1, maxT = Math.max(...slice) + 1;
+        const pts = slice.map((t, i) => {
+          const x = pad + (i / (slice.length - 1)) * (W - pad * 2);
+          const y = H - pad - ((t - minT) / (maxT - minT)) * (H - pad * 2);
+          return `${x},${y}`;
+        });
+        const polyline = pts.join(' ');
+        const areaPath = `M${pts[0]} ${pts.slice(1).map(p => 'L'+p).join(' ')} L${pts[pts.length-1].split(',')[0]},${H} L${pts[0].split(',')[0]},${H} Z`;
+        const tempLabels = slice.map((t, i) => {
+          const x = pad + (i / (slice.length - 1)) * (W - pad * 2);
+          const y = H - pad - ((t - minT) / (maxT - minT)) * (H - pad * 2) - 5;
+          return `<text x="${x}" y="${y}" text-anchor="middle" font-size="9" fill="#656d76">${Math.round(t)}</text>`;
+        }).join('');
+        const hourLabels = sliceTimes.map((t, i) => {
+          const x = pad + (i / (slice.length - 1)) * (W - pad * 2);
+          const h = new Date(t).getHours();
+          const label = h < 12 ? `AM ${h}시` : (h === 12 ? 'PM 12시' : `PM ${h-12}시`);
+          return `<text x="${x}" y="10" text-anchor="middle" font-size="8" fill="#656d76">${label}</text>`;
+        }).join('');
+
+        // Daily
+        const dailyHtml = data.daily.time.map((t, i) => {
+          const d = new Date(t);
+          const isToday = i === 0;
+          const [dicon] = weatherCodeMap[data.daily.weather_code[i]] || ['🌡️'];
+          const hi = Math.round(data.daily.temperature_2m_max[i]);
+          const lo = Math.round(data.daily.temperature_2m_min[i]);
+          return `<div class="weather-day${isToday ? ' today-day' : ''}">
+            <div class="weather-day-name">${dayNames[d.getDay()]}</div>
+            <div class="weather-day-icon">${dicon}</div>
+            <div class="weather-day-temps">${hi}°<br><span style="color:#aaa">${lo}°</span></div>
+          </div>`;
+        }).join('');
+
+        document.getElementById('weather-body').innerHTML = `
+          <div class="weather-current">
+            <div class="weather-icon">${icon}</div>
+            <div>
+              <div class="weather-temp">${temp}<span>°C</span></div>
+              <div class="weather-desc">${desc}</div>
+            </div>
+            <div class="weather-stats">
+              <div>강수확률: ${precip}%</div>
+              <div>습도: ${hum}%</div>
+              <div>풍속: ${wind}m/s</div>
+            </div>
+          </div>
+          <div class="weather-graph">
+            <svg viewBox="0 0 ${W} ${H}" height="${H}">
+              <defs>
+                <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f0a500" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#f0a500" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="${areaPath}" fill="url(#wg)"/>
+              <polyline points="${polyline}" fill="none" stroke="#f0a500" stroke-width="2" stroke-linejoin="round"/>
+              ${tempLabels}
+            </svg>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:0 ${pad}px 8px;font-size:10px;color:#656d76">
+            ${sliceTimes.map((t, i) => {
+              const h = new Date(t).getHours();
+              const label = h < 12 ? `AM${h}` : (h===12?'PM12':`PM${h-12}`);
+              const x = Math.round(pad + (i/(slice.length-1))*(W-pad*2));
+              return `<span>${label}시</span>`;
+            }).join('')}
+          </div>
+          <div class="weather-daily">${dailyHtml}</div>
+        `;
+      }).catch(() => {
+        document.getElementById('weather-body').innerHTML = '<div style="padding:16px;font-size:13px;color:#656d76">날씨 불러오기 실패</div>';
+      });
+    }
+
+    initWeather();
+
+    // Dark mode
+    function toggleTheme() {
+      const isDark = document.getElementById('theme-toggle-input').checked;
+      document.body.classList.toggle('dark', isDark);
+      document.getElementById('theme-label').textContent = isDark ? 'Dark' : 'Light';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('theme-toggle-input').checked = true;
+        document.getElementById('theme-label').textContent = 'Dark';
+      }
+    })();
+
     const YT_API_KEY = 'AIzaSyAClL4yizMIUwG_eJb9u6ySNXygOLZL5eQ';
 
     async function fetchYouTubeSubs(handle, elementId) {
@@ -997,6 +1919,110 @@
           btn.classList.remove('spinning');
         }
       }, 100);
+    }
+
+    // Playlists
+    const PLAYLIST_ID_TARGET = '좋아하는 음매드';
+    const apiKey = 'AIzaSyAClL4yizMIUwG_eJb9u6ySNXygOLZL5eQ';
+
+    function fetchPlaylists() {
+      const channelId = 'UCr9vDiU1oUOTueD-vXC5Hog';
+      fetch(`https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&channelId=${channelId}&maxResults=50&key=${apiKey}`)
+        .then(r => r.json())
+        .then(data => {
+          const el = document.getElementById('playlist-list');
+          if (!data.items || !data.items.length) {
+            el.innerHTML = '<div class="playlist-loading">공개된 플레이리스트가 없습니다.</div>';
+            return;
+          }
+          const target = data.items.find(item => item.snippet.title === PLAYLIST_ID_TARGET);
+          if (!target) {
+            el.innerHTML = '<div class="playlist-loading">플레이리스트를 찾을 수 없습니다.</div>';
+            return;
+          }
+          fetchPlaylistItems(target.id);
+        })
+        .catch(() => {
+          document.getElementById('playlist-list').innerHTML = '<div class="playlist-loading">불러오기 실패</div>';
+        });
+    }
+
+    function fetchPlaylistItems(listId) {
+      fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${listId}&maxResults=50&key=${apiKey}`)
+        .then(r => r.json())
+        .then(data => {
+          const el = document.getElementById('playlist-list');
+          if (!data.items || !data.items.length) {
+            el.innerHTML = '<div class="playlist-loading">영상이 없습니다.</div>';
+            return;
+          }
+          el.innerHTML = data.items.map(item => {
+            const title = item.snippet.title;
+            const channel = item.snippet.videoOwnerChannelTitle || '';
+            const thumb = item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url || '';
+            const videoId = item.snippet.resourceId.videoId;
+            const url = `https://www.youtube.com/watch?v=${videoId}&list=${listId}`;
+            return `<a class="playlist-video-card" href="${url}" target="_blank">
+              <img class="playlist-video-thumb" src="${thumb}" alt="">
+              <div>
+                <div class="playlist-video-title">${title}</div>
+                <div class="playlist-video-channel">${channel}</div>
+              </div>
+            </a>`;
+          }).join('');
+        })
+        .catch(() => {
+          document.getElementById('playlist-list').innerHTML = '<div class="playlist-loading">불러오기 실패</div>';
+        });
+    }
+
+    fetchPlaylists();
+
+    // Tab switching
+    const langColors = {HTML:'#e34c26',CSS:'#563d7c',JavaScript:'#f1e05a',TypeScript:'#3178c6',Python:'#3572A5',Java:'#b07219','C++':'#f34b7d',C:'#555555','C#':'#178600',Go:'#00ADD8',Rust:'#dea584',Swift:'#F05138',Kotlin:'#A97BFF',Ruby:'#701516',PHP:'#4F5D95',Dart:'#00B4AB',Shell:'#89e051',Lua:'#000080',Vue:'#41b883',SCSS:'#c6538c'};
+
+    function switchTab(tab) {
+      document.querySelectorAll('.header-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      if (tab === 'home') {
+        document.querySelector('.header-tab:nth-child(1)').classList.add('active');
+        document.getElementById('page-home').classList.add('active');
+      } else if (tab === 'projects') {
+        document.querySelector('.header-tab:nth-child(2)').classList.add('active');
+        document.getElementById('page-projects').classList.add('active');
+        fetchRepos();
+      }
+    }
+
+    let reposLoaded = false;
+    function fetchRepos() {
+      if (reposLoaded) return;
+      fetch('https://api.github.com/users/geonhee15/repos?sort=updated&per_page=100')
+        .then(r => r.json())
+        .then(repos => {
+          reposLoaded = true;
+          const list = document.getElementById('projects-list');
+          if (!repos.length) { list.innerHTML = '<div class="projects-loading">레포지토리가 없습니다.</div>'; return; }
+          list.innerHTML = repos.map(repo => {
+            const lang = repo.language || '';
+            const dot = lang ? `<span class="project-lang-dot" style="background:${langColors[lang]||'#8b949e'}"></span>${lang}` : '';
+            const stars = repo.stargazers_count ? `⭐ ${repo.stargazers_count}` : '';
+            const desc = repo.description ? `<div class="project-desc">${repo.description}</div>` : '';
+            const vis = repo.private ? '🔒 Private' : '';
+            return `<div class="project-card">
+              <a class="project-name" href="${repo.html_url}" target="_blank">${repo.name}</a> <span style="font-size:12px;color:#656d76">${vis}</span>
+              ${desc}
+              <div class="project-meta">
+                <span>${dot}</span>
+                <span>${stars}</span>
+                <span>Updated ${new Date(repo.updated_at).toLocaleDateString('ko-KR')}</span>
+              </div>
+            </div>`;
+          }).join('');
+        })
+        .catch(() => {
+          document.getElementById('projects-list').innerHTML = '<div class="projects-loading">불러오기 실패</div>';
+        });
     }
   </script>
 </body>
