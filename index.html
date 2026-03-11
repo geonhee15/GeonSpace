@@ -1390,7 +1390,7 @@
         if (document.getElementById('login-overlay').style.display === 'none') return;
 
         const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
+        const cy = canvas.height - 80;
         const target = Math.atan2(mouseY - cy, mouseX - cx);
 
         let diff = target - angle;
