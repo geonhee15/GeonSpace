@@ -803,12 +803,114 @@
       background: #f6f8fa;
     }
 
-    .channels-box {
+    .channels-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
       width: 22%;
+    }
+
+    .channels-box {
       border: 1px solid #d1d9e0;
       border-radius: 6px;
       overflow: hidden;
     }
+
+    .pomodoro-box {
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .pomodoro-header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .pomodoro-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pomodoro-mode-tabs {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .pomodoro-mode-btn {
+      flex: 1;
+      padding: 5px 0;
+      font-size: 11px;
+      border: 1px solid #d1d9e0;
+      border-radius: 4px;
+      background: none;
+      cursor: pointer;
+      color: #656d76;
+      transition: all 0.15s;
+    }
+
+    .pomodoro-mode-btn.active {
+      background: #0969da;
+      border-color: #0969da;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .pomodoro-display {
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #1f2328;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pomodoro-session {
+      font-size: 12px;
+      color: #656d76;
+    }
+
+    .pomodoro-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pomodoro-btn {
+      padding: 7px 18px;
+      font-size: 13px;
+      border-radius: 4px;
+      border: 1px solid #d1d9e0;
+      cursor: pointer;
+      background: #f6f8fa;
+      color: #1f2328;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .pomodoro-btn:hover { background: #eaeef2; }
+
+    .pomodoro-btn.start {
+      background: #1a7f37;
+      border-color: #1a7f37;
+      color: #fff;
+    }
+
+    .pomodoro-btn.start:hover { background: #116329; }
+
+    body.dark .pomodoro-box { border-color: #30363d; }
+    body.dark .pomodoro-header { border-color: #30363d; }
+    body.dark .pomodoro-display { color: #e6edf3; }
+    body.dark .pomodoro-mode-btn { border-color: #30363d; color: #848d97; background: #161b22; }
+    body.dark .pomodoro-mode-btn.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+    body.dark .pomodoro-btn { background: #21262d; border-color: #30363d; color: #e6edf3; }
+    body.dark .pomodoro-btn:hover { background: #30363d; }
+    body.dark .pomodoro-btn.start { background: #238636; border-color: #238636; color: #fff; }
+    body.dark .pomodoro-btn.start:hover { background: #2ea043; }
 
     .channels-header {
       padding: 12px 16px;
@@ -1377,11 +1479,30 @@
   </div>
 
   <div style="display:flex;gap:16px;margin:0 16px 24px;flex-wrap:wrap;align-items:flex-start">
-    <div class="channels-box">
-      <div class="channels-header">오마이갓 채널 리스트</div>
-      <div class="channels-list" id="channels-list"></div>
-      <div class="channels-add">
-        <button onclick="addChannel()">+ 채널 추가</button>
+    <div class="channels-col">
+      <div class="channels-box">
+        <div class="channels-header">오마이갓 채널 리스트</div>
+        <div class="channels-list" id="channels-list"></div>
+        <div class="channels-add">
+          <button onclick="addChannel()">+ 채널 추가</button>
+        </div>
+      </div>
+
+      <div class="pomodoro-box">
+        <div class="pomodoro-header">포모도로 타이머</div>
+        <div class="pomodoro-body">
+          <div class="pomodoro-mode-tabs">
+            <button class="pomodoro-mode-btn active" onclick="setMode('work')">집중</button>
+            <button class="pomodoro-mode-btn" onclick="setMode('short')">짧은 휴식</button>
+            <button class="pomodoro-mode-btn" onclick="setMode('long')">긴 휴식</button>
+          </div>
+          <div class="pomodoro-display" id="pomodoro-display">25:00</div>
+          <div class="pomodoro-session" id="pomodoro-session">세션 0 / 4</div>
+          <div class="pomodoro-controls">
+            <button class="pomodoro-btn start" id="pomodoro-start" onclick="togglePomodoro()">시작</button>
+            <button class="pomodoro-btn" onclick="resetPomodoro()">초기화</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1443,6 +1564,74 @@
   </div>
 
   <script>
+    // Pomodoro
+    const pomodoroModes = { work: 25 * 60, short: 5 * 60, long: 15 * 60 };
+    let pomodoroMode = 'work';
+    let pomodoroTimeLeft = pomodoroModes.work;
+    let pomodoroRunning = false;
+    let pomodoroTimer = null;
+    let pomodoroSessions = 0;
+
+    function setMode(mode) {
+      if (pomodoroRunning) return;
+      pomodoroMode = mode;
+      pomodoroTimeLeft = pomodoroModes[mode];
+      document.querySelectorAll('.pomodoro-mode-btn').forEach((b, i) => {
+        b.classList.toggle('active', ['work','short','long'][i] === mode);
+      });
+      updatePomodoroDisplay();
+    }
+
+    function updatePomodoroDisplay() {
+      const m = String(Math.floor(pomodoroTimeLeft / 60)).padStart(2, '0');
+      const s = String(pomodoroTimeLeft % 60).padStart(2, '0');
+      document.getElementById('pomodoro-display').textContent = `${m}:${s}`;
+    }
+
+    function togglePomodoro() {
+      const btn = document.getElementById('pomodoro-start');
+      if (pomodoroRunning) {
+        clearInterval(pomodoroTimer);
+        pomodoroRunning = false;
+        btn.textContent = '시작';
+        btn.classList.add('start');
+      } else {
+        pomodoroRunning = true;
+        btn.textContent = '일시정지';
+        btn.classList.remove('start');
+        pomodoroTimer = setInterval(() => {
+          pomodoroTimeLeft--;
+          updatePomodoroDisplay();
+          if (pomodoroTimeLeft <= 0) {
+            clearInterval(pomodoroTimer);
+            pomodoroRunning = false;
+            btn.textContent = '시작';
+            btn.classList.add('start');
+            if (pomodoroMode === 'work') {
+              pomodoroSessions++;
+              document.getElementById('pomodoro-session').textContent = `세션 ${pomodoroSessions} / 4`;
+            }
+            const modeName = pomodoroMode === 'work' ? '집중' : pomodoroMode === 'short' ? '짧은 휴식' : '긴 휴식';
+            if (Notification.permission === 'granted') {
+              new Notification('포모도로', { body: `${modeName} 완료!` });
+            }
+          }
+        }, 1000);
+      }
+    }
+
+    function resetPomodoro() {
+      clearInterval(pomodoroTimer);
+      pomodoroRunning = false;
+      pomodoroTimeLeft = pomodoroModes[pomodoroMode];
+      const btn = document.getElementById('pomodoro-start');
+      btn.textContent = '시작';
+      btn.classList.add('start');
+      updatePomodoroDisplay();
+    }
+
+    if (Notification.permission === 'default') Notification.requestPermission();
+
     // Login
     function doLogin() {
       const id = document.getElementById('login-id').value;
