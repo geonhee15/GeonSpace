@@ -2689,35 +2689,61 @@
 
     function makeDraggable(el, id) {
       let startX, startY, startLeft, startTop;
-      el.addEventListener('mousedown', e => {
-        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('sticky-note-color-dot')) return;
-        startX = e.clientX;
-        startY = e.clientY;
+
+      function onStart(clientX, clientY) {
+        startX = clientX;
+        startY = clientY;
         startLeft = parseInt(el.style.left) || 0;
         startTop = parseInt(el.style.top) || 0;
         el.style.zIndex = 999;
+      }
 
-        function onMove(e) {
-          el.style.left = Math.max(0, startLeft + e.clientX - startX) + 'px';
-          el.style.top = Math.max(0, startTop + e.clientY - startY) + 'px';
+      function onMove(clientX, clientY) {
+        el.style.left = Math.max(0, startLeft + clientX - startX) + 'px';
+        el.style.top = Math.max(0, startTop + clientY - startY) + 'px';
+      }
+
+      function onEnd() {
+        const notes = loadNotes();
+        const note = notes.find(n => n.id === id);
+        if (note) {
+          note.x = parseInt(el.style.left);
+          note.y = parseInt(el.style.top);
+          saveNotes(notes);
         }
+        el.style.zIndex = '';
+      }
 
-        function onUp() {
-          const notes = loadNotes();
-          const note = notes.find(n => n.id === id);
-          if (note) {
-            note.x = parseInt(el.style.left);
-            note.y = parseInt(el.style.top);
-            saveNotes(notes);
-          }
-          el.style.zIndex = '';
-          document.removeEventListener('mousemove', onMove);
-          document.removeEventListener('mouseup', onUp);
+      el.addEventListener('mousedown', e => {
+        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('sticky-note-color-dot')) return;
+        onStart(e.clientX, e.clientY);
+        function onMouseMove(e) { onMove(e.clientX, e.clientY); }
+        function onMouseUp() {
+          onEnd();
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
         }
-
-        document.addEventListener('mousemove', onMove);
-        document.addEventListener('mouseup', onUp);
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
       });
+
+      el.addEventListener('touchstart', e => {
+        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('sticky-note-color-dot')) return;
+        const t = e.touches[0];
+        onStart(t.clientX, t.clientY);
+        function onTouchMove(e) {
+          e.preventDefault();
+          const t = e.touches[0];
+          onMove(t.clientX, t.clientY);
+        }
+        function onTouchEnd() {
+          onEnd();
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+        }
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+      }, { passive: true });
     }
 
     // Backup Storage
