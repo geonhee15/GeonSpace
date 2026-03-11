@@ -1154,6 +1154,7 @@
 </head>
 <body>
   <div class="login-overlay" id="login-overlay">
+    <canvas id="login-art-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
     <div class="login-box">
       <div class="login-title">Geon_Space</div>
       <div class="login-subtitle">김건희의 퍼스널 워크스페이스</div>
@@ -1317,6 +1318,104 @@
     if (sessionStorage.getItem('auth') === '1') {
       document.getElementById('login-overlay').style.display = 'none';
     }
+
+    // Login ASCII Art
+    (function initLoginArt() {
+      const canvas = document.getElementById('login-art-canvas');
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+      // Comet shape: blunt on right (+x = front facing mouse), tapered to point on left
+      const raw = [
+        "               ·          ",
+        "            ·░▒           ",
+        "         ·░▒▓██           ",
+        "      ·░▒▓██████          ",
+        "   ·░▒▓█████████          ",
+        "·░▒▓████████████          ",
+        "   ·░▒▓█████████          ",
+        "      ·░▒▓██████          ",
+        "         ·░▒▓██           ",
+        "            ·░▒           ",
+        "               ·          ",
+      ];
+
+      const colorMap = {
+        '·': 'rgba(88,166,255,0.25)',
+        '░': 'rgba(88,166,255,0.45)',
+        '▒': 'rgba(130,195,255,0.65)',
+        '▓': 'rgba(180,220,255,0.82)',
+        '█': 'rgba(230,242,255,0.95)',
+      };
+
+      const fontSize = 13;
+      const charW = fontSize * 0.62;
+      const charH = fontSize * 1.2;
+      const rows = raw.length;
+      const midRow = Math.floor(rows / 2);
+
+      // Find rightmost █ column as anchor (blunt face center)
+      let maxCol = 0;
+      raw.forEach(r => { maxCol = Math.max(maxCol, r.length); });
+
+      const particles = [];
+      raw.forEach((line, r) => {
+        for (let c = 0; c < line.length; c++) {
+          const ch = line[c];
+          if (ch !== ' ') {
+            particles.push({
+              x: (c - maxCol + 2) * charW,
+              y: (r - midRow) * charH,
+              char: ch,
+              color: colorMap[ch] || 'rgba(255,255,255,0.5)'
+            });
+          }
+        }
+      });
+
+      let angle = 0;
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (document.getElementById('login-overlay').style.display === 'none') return;
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const target = Math.atan2(mouseY - cy, mouseX - cx);
+
+        let diff = target - angle;
+        while (diff > Math.PI) diff -= 2 * Math.PI;
+        while (diff < -Math.PI) diff += 2 * Math.PI;
+        angle += diff * 0.07;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+        ctx.font = `${fontSize}px monospace`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+
+        particles.forEach(p => {
+          ctx.fillStyle = p.color;
+          ctx.fillText(p.char, p.x, p.y);
+        });
+
+        ctx.restore();
+        requestAnimationFrame(render);
+      }
+
+      render();
+    })();
     // 오늘의 명언 (날짜 기반으로 매일 바뀜)
     const quotes = [
       { text: "인생에서 가장 큰 영광은 넘어지지 않는 것이 아니라, 넘어질 때마다 일어서는 것이다.", author: "넬슨 만델라" },
