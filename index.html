@@ -1391,7 +1391,12 @@
 
         const cx = canvas.width / 2;
         const cy = canvas.height - 80;
-        const target = Math.atan2(mouseY - cy, mouseX - cx);
+
+        // 0° = 뾰족한 끝이 위, ±80° 제한
+        const maxAngle = 80 * Math.PI / 180;
+        const rawAngle = Math.atan2(mouseX - cx, cy - mouseY);
+        const clamped = Math.max(-maxAngle, Math.min(maxAngle, rawAngle));
+        const target = Math.PI / 2 + clamped;
 
         let diff = target - angle;
         while (diff > Math.PI) diff -= 2 * Math.PI;
