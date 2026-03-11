@@ -1476,8 +1476,13 @@
     }
 
     const defaultSkills = [
-      { name: 'Python', pct: 50 },
-      { name: 'Java', pct: 50 }
+      { name: 'Python', pct: 85 },
+      { name: 'Java', pct: 70 },
+      { name: 'Lua', pct: 20 },
+      { name: 'HTML', pct: 75 },
+      { name: 'JavaScript', pct: 40 },
+      { name: 'JSON', pct: 10 },
+      { name: 'GDScript', pct: 30 }
     ];
     const skills = JSON.parse(localStorage.getItem('skills')) || [...defaultSkills];
 
@@ -1626,7 +1631,15 @@
       ]
     };
 
-    const hackingSkills = JSON.parse(localStorage.getItem('hackingSkills')) || [];
+    const defaultHackingSkills = [
+      { name: 'Gobuster', category: 'Recon / Enumeration', pct: 75 },
+      { name: 'SQL Injection', category: 'Web Attacks', pct: 60 },
+      { name: 'XSS (Cross-Site Scripting)', category: 'Web Attacks', pct: 50 },
+      { name: 'Reverse Shell', category: 'Post-Exploitation', pct: 70 },
+      { name: 'Web Shell', category: 'Post-Exploitation', pct: 70 },
+      { name: 'Burp Suite', category: 'Exploitation Tools', pct: 70 }
+    ];
+    const hackingSkills = JSON.parse(localStorage.getItem('hackingSkills')) || [...defaultHackingSkills];
 
     function saveHackingSkills() {
       localStorage.setItem('hackingSkills', JSON.stringify(hackingSkills));
