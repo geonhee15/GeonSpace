@@ -1932,7 +1932,9 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    const channels = JSON.parse(localStorage.getItem('channels')) || [];
+    const channels = JSON.parse(localStorage.getItem('channels')) || [
+      { name: '보물섬', url: 'https://www.youtube.com/@bomulsum_g' }
+    ];
 
     function saveChannels() {
       localStorage.setItem('channels', JSON.stringify(channels));
