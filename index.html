@@ -371,6 +371,28 @@
 
     body.dark .notes-title { color: #e6edf3; }
 
+    .info-page { padding: 24px 16px; }
+    .info-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .info-subtitle { font-size: 13px; color: #656d76; margin-bottom: 20px; }
+    .info-search { padding: 7px 12px; border: 1px solid #d1d9e0; border-radius: 6px; font-size: 13px; width: 260px; margin-bottom: 20px; outline: none; }
+    .info-search:focus { border-color: #0969da; box-shadow: 0 0 0 3px rgba(9,105,218,0.15); }
+    .info-month-label { font-size: 15px; font-weight: 600; margin: 20px 0 8px; padding: 6px 0; border-bottom: 2px solid #d1d9e0; }
+    .info-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    .info-table th { text-align: left; padding: 8px 12px; font-size: 12px; color: #656d76; font-weight: 600; border-bottom: 1px solid #d1d9e0; }
+    .info-table td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+    .info-table tr:hover td { background: #f6f8fa; }
+    .info-table .name-cell { font-weight: 500; }
+    .info-highlight { background: #fff8c5; }
+
+    body.dark .info-title { color: #e6edf3; }
+    body.dark .info-search { background: #0d1117; border-color: #30363d; color: #e6edf3; }
+    body.dark .info-search:focus { border-color: #1f6feb; box-shadow: 0 0 0 3px rgba(31,111,235,0.2); }
+    body.dark .info-month-label { color: #e6edf3; border-color: #30363d; }
+    body.dark .info-table th { color: #848d97; border-color: #30363d; }
+    body.dark .info-table td { border-color: #21262d; color: #e6edf3; }
+    body.dark .info-table tr:hover td { background: #161b22; }
+    body.dark .info-highlight { background: #3b2e00; }
+
     .backup-toolbar {
       display: flex;
       align-items: center;
@@ -1687,9 +1709,11 @@
   </div>
 
   <div id="page-info" class="page">
-    <div class="info-page" style="padding:24px 16px">
-      <div style="font-size:20px;font-weight:700;margin-bottom:16px">Info</div>
-      <div style="color:#656d76;font-size:14px">내용을 알려주세요!</div>
+    <div class="info-page">
+      <div class="info-title">Class Birthdays</div>
+      <div class="info-subtitle">우리 반 생일 목록 (총 122명)</div>
+      <input type="text" class="info-search" id="info-search" placeholder="이름으로 검색..." oninput="filterBirthdays()">
+      <div id="info-table-area"></div>
     </div>
   </div>
 
@@ -2616,6 +2640,179 @@
         renderBackupList();
       }
     }
+
+    // Info - Birthdays
+    const classBirthdays = [
+      {name:'Ain Baek',date:'2014-01-01'},
+      {name:'Jiho Sim',date:'2014-01-05'},
+      {name:'Nayoon Han',date:'2014-01-05'},
+      {name:'Layla Rahee Kim',date:'2014-01-10'},
+      {name:'Dongheon Kim',date:'2014-01-15'},
+      {name:'Siwoo Jeon',date:'2014-01-15'},
+      {name:'Isaac James Linn',date:'2014-01-21'},
+      {name:'Hagyum Joseph Lee',date:'2014-01-22'},
+      {name:'Caius Chung Yoon',date:'2014-01-25'},
+      {name:'Seamoon Choi',date:'2014-01-30'},
+      {name:'Geeyoo Lim',date:'2014-01-31'},
+      {name:'Yoondan Lim',date:'2013-02-03'},
+      {name:'Rachab Abraham Tilahun',date:'2014-02-09'},
+      {name:'Jiwoo Kang',date:'2014-02-12'},
+      {name:'Yeri Lee',date:'2014-02-14'},
+      {name:'Harang Song',date:'2014-02-21'},
+      {name:'Janice Yewon Son',date:'2014-02-23'},
+      {name:'Jueun Jung',date:'2014-02-27'},
+      {name:'Lucas Sul',date:'2014-02-27'},
+      {name:'Daniel Lynn Kim',date:'2014-03-02'},
+      {name:'Eleanor Yeong Seo Han',date:'2013-03-04'},
+      {name:'Alex Seojun Kil',date:'2014-03-05'},
+      {name:'Jihoon Choi',date:'2013-03-14'},
+      {name:'Songhyun Lee',date:'2013-03-14'},
+      {name:'Junhee Lim',date:'2014-03-12'},
+      {name:'Jein Lee',date:'2014-03-24'},
+      {name:'Skyler Seoyoon Shin',date:'2014-03-28'},
+      {name:'Viyona Chaudhary',date:'2014-03-31'},
+      {name:'Woori Pi',date:'2014-04-02'},
+      {name:'Mazen Daadou Dadaouh',date:'2014-04-03'},
+      {name:'Seoyoon Lee',date:'2014-04-03'},
+      {name:'Shin Young Park',date:'2014-04-05'},
+      {name:'Kiho Chae',date:'2014-04-09'},
+      {name:'Mia Anic',date:'2014-04-09'},
+      {name:'Taiga Yoshida',date:'2013-04-20'},
+      {name:'Amen Sisay Mekonen',date:'2014-04-15'},
+      {name:'Jiin Chung',date:'2014-04-15'},
+      {name:'Chloe Kang Park',date:'2014-04-16'},
+      {name:'Yoosang Chun',date:'2014-04-20'},
+      {name:'Eda Rose Leonard',date:'2013-04-30'},
+      {name:'Melda Leonard',date:'2013-04-30'},
+      {name:'Minseo Sung',date:'2014-04-29'},
+      {name:'Seojun Kim',date:'2014-04-29'},
+      {name:'Edward Lee',date:'2013-05-01'},
+      {name:'Hannah Fagogenis',date:'2014-05-03'},
+      {name:'Yujoon Kim',date:'2013-05-06'},
+      {name:'Dasom Kim',date:'2014-05-09'},
+      {name:'Taeyang Eum',date:'2014-05-16'},
+      {name:'Yoonchae Park',date:'2014-05-20'},
+      {name:'Sanyul Kang',date:'2014-05-21'},
+      {name:'Suha Jang',date:'2014-05-26'},
+      {name:'Eva Victoria Alexandra Hallgren Castro',date:'2014-05-27'},
+      {name:'Clayton Jinsu Kim',date:'2014-05-30'},
+      {name:'Luke Sung Hyun Kim',date:'2013-06-04'},
+      {name:'Kavya Mandal',date:'2014-06-03'},
+      {name:'Hojun Ahn',date:'2014-06-05'},
+      {name:'Reese Sorren Cates',date:'2014-06-12'},
+      {name:'Suveer Sorti',date:'2014-06-12'},
+      {name:'Yeonwoo Do',date:'2014-06-13'},
+      {name:'Ava Ain Harnish',date:'2014-06-17'},
+      {name:'Mingyung Choo',date:'2014-06-23'},
+      {name:'Jain Cho',date:'2014-06-28'},
+      {name:'Noah Mark Hirschfeld',date:'2013-07-03'},
+      {name:'Seoyoon Chung',date:'2014-07-02'},
+      {name:'Suah Sull',date:'2014-07-03'},
+      {name:'Roy Jinwoo An',date:'2014-07-08'},
+      {name:'Geonhee Kim',date:'2014-07-09'},
+      {name:'Yeonjoo Choi',date:'2013-07-18'},
+      {name:'Whijun Kim',date:'2013-07-20'},
+      {name:'Wonjoon Lee',date:'2014-07-18'},
+      {name:'Petar Parnadjiev',date:'2013-07-26'},
+      {name:'Gio Park',date:'2014-07-21'},
+      {name:'Mason Hyunwoo Moon',date:'2014-07-21'},
+      {name:'Kensie Grae Nam',date:'2014-07-27'},
+      {name:'Woomin Jeong',date:'2014-07-31'},
+      {name:'Aaron Kim',date:'2013-08-07'},
+      {name:'Seongho Kang',date:'2014-08-07'},
+      {name:'Clarenne Yule Shon',date:'2014-08-17'},
+      {name:'Jay Kelleher Koo',date:'2013-08-24'},
+      {name:'Lucas Hoeyeong Jung',date:'2013-08-30'},
+      {name:'Woojin Go',date:'2013-08-30'},
+      {name:'Martin Francis Streckfus-Green',date:'2014-08-25'},
+      {name:'Daeun Jung',date:'2013-09-02'},
+      {name:'Sunyoung Park',date:'2013-09-05'},
+      {name:'Zhuyuan Li',date:'2013-09-14'},
+      {name:'Eleanor Rosamund de Havilland',date:'2013-09-15'},
+      {name:'Noah Uuj Eriksson',date:'2013-09-15'},
+      {name:'Yoel Chang',date:'2013-09-15'},
+      {name:'Eunseo Cho',date:'2013-09-17'},
+      {name:'Yoonchae Song',date:'2013-09-18'},
+      {name:'Younghoon Lee',date:'2013-09-21'},
+      {name:'Ireh Kim',date:'2013-09-22'},
+      {name:'Sian Hong',date:'2013-09-25'},
+      {name:'Caspar Joseph Farchy',date:'2013-10-02'},
+      {name:'Elwood Ansted',date:'2013-10-03'},
+      {name:'Eunjae Lim',date:'2013-10-03'},
+      {name:'Chie Shimada',date:'2013-10-04'},
+      {name:'Allison Jiwoo Rhee',date:'2013-10-07'},
+      {name:'Chaeyoung Madeline Lee',date:'2013-10-07'},
+      {name:'Jaea Kim',date:'2013-10-07'},
+      {name:'Elijah Lee Jeon',date:'2013-10-21'},
+      {name:'Yoon Taek Shim',date:'2013-10-27'},
+      {name:'Abigail Hayoon Park',date:'2013-10-28'},
+      {name:'Jei Kim',date:'2013-11-04'},
+      {name:'Jumi Nam',date:'2013-11-04'},
+      {name:'Bienhu Park',date:'2013-11-06'},
+      {name:'Jeongwoo Park',date:'2013-11-09'},
+      {name:'Dayul Kim',date:'2013-11-13'},
+      {name:'Eunseol Ko',date:'2013-11-14'},
+      {name:'Jung Hyun Park',date:'2013-11-21'},
+      {name:'Yejin Chung',date:'2013-11-23'},
+      {name:'Jane Lee',date:'2013-11-25'},
+      {name:'One Chung',date:'2013-11-25'},
+      {name:'Oliver Jun Kyung',date:'2013-11-26'},
+      {name:'Sophia Minseo Koo',date:'2013-12-03'},
+      {name:'Yoonsuh Cho',date:'2013-12-03'},
+      {name:'Haeeon Lee',date:'2013-12-04'},
+      {name:'Yeji Choi',date:'2013-12-04'},
+      {name:'Emerson Cox',date:'2013-12-07'},
+      {name:'Lucas Rohan Mercader Padrinao',date:'2013-12-12'},
+      {name:'Wonwoo Choi',date:'2013-12-14'},
+      {name:'Seojin Wee',date:'2013-12-19'},
+      {name:'Youna Chi',date:'2013-12-26'}
+    ];
+
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    function renderBirthdays(filter) {
+      const area = document.getElementById('info-table-area');
+      if (!area) return;
+      const q = (filter || '').toLowerCase();
+      const grouped = {};
+      classBirthdays.forEach(p => {
+        if (q && !p.name.toLowerCase().includes(q)) return;
+        const m = parseInt(p.date.split('-')[1]) - 1;
+        if (!grouped[m]) grouped[m] = [];
+        grouped[m].push(p);
+      });
+      if (Object.keys(grouped).length === 0) {
+        area.innerHTML = '<div style="color:#656d76;font-size:14px;padding:20px 0">검색 결과가 없습니다.</div>';
+        return;
+      }
+      let html = '';
+      monthNames.forEach((name, i) => {
+        if (!grouped[i]) return;
+        html += `<div class="info-month-label">${name} (${grouped[i].length}명)</div>`;
+        html += '<table class="info-table"><thead><tr><th style="width:5%">#</th><th style="width:45%">이름</th><th style="width:25%">생년월일</th><th style="width:25%">D-Day</th></tr></thead><tbody>';
+        grouped[i].forEach((p, idx) => {
+          const d = new Date(p.date);
+          const dateStr = `${d.getFullYear()}. ${d.getMonth()+1}. ${d.getDate()}.`;
+          const today = new Date();
+          const bday = new Date(today.getFullYear(), d.getMonth(), d.getDate());
+          if (bday < today) bday.setFullYear(bday.getFullYear() + 1);
+          const diff = Math.ceil((bday - today) / 86400000);
+          const isSoon = diff <= 7;
+          const isMe = p.name === 'Geonhee Kim';
+          const rowClass = isMe ? ' class="info-highlight"' : '';
+          const dday = diff === 0 ? '<span style="color:#1a7f37;font-weight:600">TODAY!</span>' : (isSoon ? `<span style="color:#cf222e;font-weight:500">D-${diff}</span>` : `D-${diff}`);
+          html += `<tr${rowClass}><td>${idx+1}</td><td class="name-cell">${p.name}</td><td>${dateStr}</td><td>${dday}</td></tr>`;
+        });
+        html += '</tbody></table>';
+      });
+      area.innerHTML = html;
+    }
+
+    function filterBirthdays() {
+      renderBirthdays(document.getElementById('info-search').value);
+    }
+
+    renderBirthdays();
 
     // Sticky Notes
     const NOTE_COLORS = ['#fef08a','#86efac','#93c5fd','#f9a8d4','#fdba74','#c4b5fd'];
