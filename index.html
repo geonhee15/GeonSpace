@@ -372,22 +372,66 @@
     body.dark .notes-title { color: #e6edf3; }
 
     .info-page { padding: 24px 16px; }
-    .info-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-    .info-subtitle { font-size: 13px; color: #656d76; margin-bottom: 20px; }
-    .info-search { padding: 7px 12px; border: 1px solid #d1d9e0; border-radius: 6px; font-size: 13px; width: 260px; margin-bottom: 20px; outline: none; }
+
+    .info-birthday-widget {
+      width: 360px;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .info-birthday-widget.expanded {
+      width: 100%;
+    }
+
+    .info-bday-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #d1d9e0;
+    }
+
+    .info-search { flex: 1; padding: 6px 10px; border: 1px solid #d1d9e0; border-radius: 4px; font-size: 12px; outline: none; }
     .info-search:focus { border-color: #0969da; box-shadow: 0 0 0 3px rgba(9,105,218,0.15); }
-    .info-month-label { font-size: 15px; font-weight: 600; margin: 20px 0 8px; padding: 6px 0; border-bottom: 2px solid #d1d9e0; }
-    .info-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-    .info-table th { text-align: left; padding: 8px 12px; font-size: 12px; color: #656d76; font-weight: 600; border-bottom: 1px solid #d1d9e0; }
-    .info-table td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+
+    .info-expand-btn {
+      padding: 5px 10px;
+      font-size: 11px;
+      border: 1px solid #d1d9e0;
+      border-radius: 4px;
+      background: #f6f8fa;
+      cursor: pointer;
+      white-space: nowrap;
+      color: #1f2328;
+    }
+
+    .info-expand-btn:hover { background: #eaeef2; }
+
+    #info-table-area {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .info-birthday-widget.expanded #info-table-area {
+      max-height: none;
+    }
+
+    .info-month-label { font-size: 13px; font-weight: 600; margin: 0; padding: 8px 12px 4px; border-bottom: 1px solid #d1d9e0; background: #f6f8fa; position: sticky; top: 0; z-index: 1; }
+    .info-table { width: 100%; border-collapse: collapse; }
+    .info-table th { text-align: left; padding: 5px 12px; font-size: 11px; color: #656d76; font-weight: 600; border-bottom: 1px solid #d1d9e0; }
+    .info-table td { padding: 5px 12px; font-size: 12px; border-bottom: 1px solid #f0f0f0; }
     .info-table tr:hover td { background: #f6f8fa; }
     .info-table .name-cell { font-weight: 500; }
     .info-highlight { background: #fff8c5; }
 
-    body.dark .info-title { color: #e6edf3; }
+    body.dark .info-birthday-widget { border-color: #30363d; }
+    body.dark .info-bday-header { border-color: #30363d; }
     body.dark .info-search { background: #0d1117; border-color: #30363d; color: #e6edf3; }
     body.dark .info-search:focus { border-color: #1f6feb; box-shadow: 0 0 0 3px rgba(31,111,235,0.2); }
-    body.dark .info-month-label { color: #e6edf3; border-color: #30363d; }
+    body.dark .info-expand-btn { background: #21262d; border-color: #30363d; color: #e6edf3; }
+    body.dark .info-expand-btn:hover { background: #30363d; }
+    body.dark .info-month-label { color: #e6edf3; border-color: #30363d; background: #161b22; }
     body.dark .info-table th { color: #848d97; border-color: #30363d; }
     body.dark .info-table td { border-color: #21262d; color: #e6edf3; }
     body.dark .info-table tr:hover td { background: #161b22; }
@@ -1710,10 +1754,13 @@
 
   <div id="page-info" class="page">
     <div class="info-page">
-      <div class="info-title">Class Birthdays</div>
-      <div class="info-subtitle">우리 반 생일 목록 (총 122명)</div>
-      <input type="text" class="info-search" id="info-search" placeholder="이름으로 검색..." oninput="filterBirthdays()">
-      <div id="info-table-area"></div>
+      <div class="info-birthday-widget" id="info-birthday-widget">
+        <div class="info-bday-header">
+          <input type="text" class="info-search" id="info-search" placeholder="이름 검색..." oninput="filterBirthdays()">
+          <button class="info-expand-btn" id="info-expand-btn" onclick="toggleBirthdayExpand()">더보기</button>
+        </div>
+        <div id="info-table-area"></div>
+      </div>
     </div>
   </div>
 
@@ -2810,6 +2857,15 @@
 
     function filterBirthdays() {
       renderBirthdays(document.getElementById('info-search').value);
+    }
+
+    let birthdayExpanded = false;
+    function toggleBirthdayExpand() {
+      birthdayExpanded = !birthdayExpanded;
+      const widget = document.getElementById('info-birthday-widget');
+      const btn = document.getElementById('info-expand-btn');
+      widget.classList.toggle('expanded', birthdayExpanded);
+      btn.textContent = birthdayExpanded ? '접기' : '더보기';
     }
 
     renderBirthdays();
