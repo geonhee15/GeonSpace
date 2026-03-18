@@ -371,6 +371,35 @@
 
     body.dark .notes-title { color: #e6edf3; }
 
+    .toast-container {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #1f2328;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 3.7s forwards;
+      max-width: 360px;
+      pointer-events: auto;
+    }
+
+    .toast-title { font-weight: 600; margin-bottom: 2px; }
+    .toast-body { color: #b1bac4; }
+
+    @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+
     .info-page { padding: 24px 16px; }
 
     .info-birthday-widget {
@@ -1781,6 +1810,8 @@
     <button class="backup-modal-close" onclick="closeBackupModal()">닫기</button>
   </div>
 
+  <div class="toast-container" id="toast-container"></div>
+
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script>
@@ -2886,13 +2917,49 @@
 
     renderBirthdays();
 
+    // Toast notifications
+    const sessionId = Math.random().toString(36).slice(2);
+
+    function showToast(title, body) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<div class="toast-title">${title}</div><div class="toast-body">${body}</div>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
     // Sticky Notes (Firebase Realtime)
     const NOTE_COLORS = ['#fef08a','#86efac','#93c5fd','#f9a8d4','#fdba74','#c4b5fd'];
     let cachedNotes = {};
+    let notesLoaded = false;
 
     notesRef.on('value', snap => {
       cachedNotes = snap.val() || {};
+      if (!notesLoaded) { notesLoaded = true; }
       renderNotes();
+    });
+
+    notesRef.on('child_added', snap => {
+      if (!notesLoaded) return;
+      const note = snap.val();
+      if (note._sid === sessionId) return;
+      const author = note.author || '익명';
+      showToast('새 메모 추가', `${author}님이 새 메모를 추가했습니다.`);
+    });
+
+    notesRef.on('child_changed', snap => {
+      const note = snap.val();
+      if (note._sid === sessionId) return;
+      const author = note.author || '익명';
+      showToast('메모 수정', `${author}님이 메모를 수정했습니다.`);
+    });
+
+    notesRef.on('child_removed', snap => {
+      const note = snap.val();
+      if (note._sid === sessionId) return;
+      const author = note.author || '익명';
+      showToast('메모 삭제', `${author}님이 메모를 삭제했습니다.`);
     });
 
     function addNote() {
@@ -2904,7 +2971,8 @@
         text: '',
         author: '',
         x, y,
-        date: new Date().toLocaleDateString('ko-KR')
+        date: new Date().toLocaleDateString('ko-KR'),
+        _sid: sessionId
       };
       notesRef.push(note);
     }
@@ -2945,7 +3013,7 @@
     }
 
     function updateNote(key, field, value) {
-      notesRef.child(key).update({ [field]: value });
+      notesRef.child(key).update({ [field]: value, _sid: sessionId });
     }
 
     function deleteNote(key) {
@@ -2953,7 +3021,7 @@
     }
 
     function changeNoteColor(key, color) {
-      notesRef.child(key).update({ color });
+      notesRef.child(key).update({ color, _sid: sessionId });
     }
 
     function makeDraggable(el, key) {
@@ -2975,7 +3043,8 @@
       function onEnd() {
         notesRef.child(key).update({
           x: parseInt(el.style.left),
-          y: parseInt(el.style.top)
+          y: parseInt(el.style.top),
+          _sid: sessionId
         });
         el.style.zIndex = '';
       }
