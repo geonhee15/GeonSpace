@@ -1529,8 +1529,9 @@
     <nav class="header-tabs">
       <a class="header-tab active" onclick="switchTab('home')">Home</a>
       <a class="header-tab" onclick="switchTab('projects')">Projects</a>
-      <a class="header-tab" onclick="switchTab('backup')">Backup Storage</a>
+      <a class="header-tab" onclick="switchTab('info')">Info</a>
       <a class="header-tab" onclick="switchTab('notes')">Sticky Notes</a>
+      <a class="header-tab" onclick="switchTab('backup')">Backup Storage</a>
     </nav>
     <div class="theme-switch">
       <span id="theme-label">Light</span>
@@ -1682,6 +1683,13 @@
       <div class="projects-list" id="projects-list">
         <div class="projects-loading">레포지토리 불러오는 중...</div>
       </div>
+    </div>
+  </div>
+
+  <div id="page-info" class="page">
+    <div class="info-page" style="padding:24px 16px">
+      <div style="font-size:20px;font-weight:700;margin-bottom:16px">Info</div>
+      <div style="color:#656d76;font-size:14px">내용을 알려주세요!</div>
     </div>
   </div>
 
@@ -2595,14 +2603,17 @@
         document.querySelector('.header-tab:nth-child(2)').classList.add('active');
         document.getElementById('page-projects').classList.add('active');
         fetchRepos();
-      } else if (tab === 'backup') {
+      } else if (tab === 'info') {
         document.querySelector('.header-tab:nth-child(3)').classList.add('active');
-        document.getElementById('page-backup').classList.add('active');
-        renderBackupList();
+        document.getElementById('page-info').classList.add('active');
       } else if (tab === 'notes') {
         document.querySelector('.header-tab:nth-child(4)').classList.add('active');
         document.getElementById('page-notes').classList.add('active');
         renderNotes();
+      } else if (tab === 'backup') {
+        document.querySelector('.header-tab:nth-child(5)').classList.add('active');
+        document.getElementById('page-backup').classList.add('active');
+        renderBackupList();
       }
     }
 
