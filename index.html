@@ -1781,6 +1781,21 @@
     <button class="backup-modal-close" onclick="closeBackupModal()">닫기</button>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcgz1up8SaSw93WWbMpUaVeScznX9W_4",
+      authDomain: "geonspace.firebaseapp.com",
+      databaseURL: "https://geonspace-default-rtdb.firebaseio.com",
+      projectId: "geonspace",
+      storageBucket: "geonspace.firebasestorage.app",
+      messagingSenderId: "877955913252",
+      appId: "1:877955913252:web:0b1f7ae09f88ddd0c72ab1"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const notesRef = firebase.database().ref('stickyNotes');
+  </script>
   <script>
     // Pomodoro
     const pomodoroModes = { work: 25 * 60, short: 5 * 60, long: 15 * 60 };
@@ -2871,89 +2886,77 @@
 
     renderBirthdays();
 
-    // Sticky Notes
+    // Sticky Notes (Firebase Realtime)
     const NOTE_COLORS = ['#fef08a','#86efac','#93c5fd','#f9a8d4','#fdba74','#c4b5fd'];
+    let cachedNotes = {};
 
-    function loadNotes() {
-      return JSON.parse(localStorage.getItem('stickyNotes') || '[]');
-    }
-
-    function saveNotes(notes) {
-      localStorage.setItem('stickyNotes', JSON.stringify(notes));
-    }
+    notesRef.on('value', snap => {
+      cachedNotes = snap.val() || {};
+      renderNotes();
+    });
 
     function addNote() {
-      const notes = loadNotes();
-      const board = document.getElementById('notes-board');
-      const rect = board.getBoundingClientRect();
-      const x = 40 + (notes.length % 5) * 30;
-      const y = 40 + (notes.length % 4) * 30;
+      const keys = Object.keys(cachedNotes);
+      const x = 40 + (keys.length % 5) * 30;
+      const y = 40 + (keys.length % 4) * 30;
       const note = {
-        id: Date.now(),
-        color: NOTE_COLORS[notes.length % NOTE_COLORS.length],
+        color: NOTE_COLORS[keys.length % NOTE_COLORS.length],
         text: '',
         author: '',
         x, y,
         date: new Date().toLocaleDateString('ko-KR')
       };
-      notes.push(note);
-      saveNotes(notes);
-      renderNotes();
+      notesRef.push(note);
     }
 
     function renderNotes() {
       const board = document.getElementById('notes-board');
       if (!board) return;
       board.innerHTML = '';
-      const notes = loadNotes();
-      if (notes.length === 0) {
+      const keys = Object.keys(cachedNotes);
+      if (keys.length === 0) {
         board.innerHTML = '<div style="color:#656d76;font-size:14px;padding:40px">메모가 없습니다. 새 메모를 추가해보세요.</div>';
         return;
       }
-      notes.forEach(note => {
+      keys.forEach(key => {
+        const note = cachedNotes[key];
         const el = document.createElement('div');
         el.className = 'sticky-note';
         el.style.background = note.color;
-        el.style.left = note.x + 'px';
-        el.style.top = note.y + 'px';
-        el.dataset.id = note.id;
+        el.style.left = (note.x || 0) + 'px';
+        el.style.top = (note.y || 0) + 'px';
+        el.dataset.key = key;
         el.innerHTML = `
           <div class="sticky-note-header">
             <div class="sticky-note-color-btns">
-              ${NOTE_COLORS.map(c => `<div class="sticky-note-color-dot" style="background:${c}" onclick="changeNoteColor(${note.id},'${c}')"></div>`).join('')}
+              ${NOTE_COLORS.map(c => `<div class="sticky-note-color-dot" style="background:${c}" onclick="changeNoteColor('${key}','${c}')"></div>`).join('')}
             </div>
-            <button class="sticky-note-delete" onclick="deleteNote(${note.id})">✕</button>
+            <button class="sticky-note-delete" onclick="deleteNote('${key}')">✕</button>
           </div>
           <div class="sticky-note-author">
-            <input type="text" placeholder="작성자" value="${note.author}" onchange="updateNote(${note.id},'author',this.value)" onmousedown="event.stopPropagation()">
+            <input type="text" placeholder="작성자" value="${note.author || ''}" onchange="updateNote('${key}','author',this.value)" onmousedown="event.stopPropagation()">
           </div>
-          <textarea class="sticky-note-text" placeholder="메모를 입력하세요..." onchange="updateNote(${note.id},'text',this.value)" onmousedown="event.stopPropagation()">${note.text}</textarea>
-          <div class="sticky-note-date">${note.date}</div>
+          <textarea class="sticky-note-text" placeholder="메모를 입력하세요..." onchange="updateNote('${key}','text',this.value)" onmousedown="event.stopPropagation()">${note.text || ''}</textarea>
+          <div class="sticky-note-date">${note.date || ''}</div>
         `;
-        makeDraggable(el, note.id);
+        makeDraggable(el, key);
         board.appendChild(el);
       });
     }
 
-    function updateNote(id, field, value) {
-      const notes = loadNotes();
-      const note = notes.find(n => n.id === id);
-      if (note) { note[field] = value; saveNotes(notes); }
+    function updateNote(key, field, value) {
+      notesRef.child(key).update({ [field]: value });
     }
 
-    function deleteNote(id) {
-      const notes = loadNotes().filter(n => n.id !== id);
-      saveNotes(notes);
-      renderNotes();
+    function deleteNote(key) {
+      notesRef.child(key).remove();
     }
 
-    function changeNoteColor(id, color) {
-      const notes = loadNotes();
-      const note = notes.find(n => n.id === id);
-      if (note) { note.color = color; saveNotes(notes); renderNotes(); }
+    function changeNoteColor(key, color) {
+      notesRef.child(key).update({ color });
     }
 
-    function makeDraggable(el, id) {
+    function makeDraggable(el, key) {
       let startX, startY, startLeft, startTop;
 
       function onStart(clientX, clientY) {
@@ -2970,13 +2973,10 @@
       }
 
       function onEnd() {
-        const notes = loadNotes();
-        const note = notes.find(n => n.id === id);
-        if (note) {
-          note.x = parseInt(el.style.left);
-          note.y = parseInt(el.style.top);
-          saveNotes(notes);
-        }
+        notesRef.child(key).update({
+          x: parseInt(el.style.left),
+          y: parseInt(el.style.top)
+        });
         el.style.zIndex = '';
       }
 
