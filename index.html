@@ -465,31 +465,6 @@
     body.dark .info-table td { border-color: #21262d; color: #e6edf3; }
     body.dark .info-table tr:hover td { background: #161b22; }
 
-    .ctx-menu {
-      position: fixed;
-      z-index: 10000;
-      background: #fff;
-      border: 1px solid #d1d9e0;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-      min-width: 160px;
-      padding: 4px;
-      display: none;
-    }
-    .ctx-menu.show { display: block; }
-    .ctx-menu-item {
-      padding: 7px 12px;
-      font-size: 13px;
-      cursor: pointer;
-      border-radius: 5px;
-      color: #1f2328;
-    }
-    .ctx-menu-item:hover { background: #f0f3f6; }
-    .ctx-menu-sep { height: 1px; background: #d1d9e0; margin: 4px 0; }
-    body.dark .ctx-menu { background: #161b22; border-color: #30363d; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
-    body.dark .ctx-menu-item { color: #e6edf3; }
-    body.dark .ctx-menu-item:hover { background: #21262d; }
-    body.dark .ctx-menu-sep { background: #30363d; }
     body.dark .info-highlight { background: #3b2e00; }
 
     .backup-toolbar {
@@ -1948,11 +1923,7 @@
 
   <div class="toast-container" id="toast-container"></div>
 
-  <div class="ctx-menu" id="ctx-menu">
-    <div class="ctx-menu-item" id="ctx-cracked">Cracked Info</div>
-    <div class="ctx-menu-sep"></div>
-    <div class="ctx-menu-item" id="ctx-back">뒤로가기</div>
-  </div>
+  <div id="page-student" class="page"></div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -3059,36 +3030,28 @@
 
     renderBirthdays();
 
-    // Student context menu
-    let ctxStudent = null;
-    const ctxMenu = document.getElementById('ctx-menu');
-
-    document.getElementById('info-table-area').addEventListener('contextmenu', e => {
+    // Hidden student profile page (double-click)
+    document.getElementById('info-table-area').addEventListener('dblclick', e => {
       const tr = e.target.closest('tr[data-student]');
       if (!tr) return;
-      e.preventDefault();
-      ctxStudent = {
-        name: tr.dataset.student,
-        email: tr.dataset.email,
-        date: tr.dataset.date
-      };
-      ctxMenu.style.left = Math.min(e.clientX, window.innerWidth - 180) + 'px';
-      ctxMenu.style.top = Math.min(e.clientY, window.innerHeight - 80) + 'px';
-      ctxMenu.classList.add('show');
+      openStudentProfile(tr.dataset.student, tr.dataset.email, tr.dataset.date);
     });
 
-    document.addEventListener('click', () => ctxMenu.classList.remove('show'));
-
-    document.getElementById('ctx-cracked').addEventListener('click', () => {
-      if (!ctxStudent) return;
-      alert(`[Cracked Info]\n\nName: ${ctxStudent.name}\nEmail: ${ctxStudent.email}\nBirth: ${ctxStudent.date}`);
-      ctxMenu.classList.remove('show');
-    });
-
-    document.getElementById('ctx-back').addEventListener('click', () => {
-      ctxMenu.classList.remove('show');
-      switchTab('home');
-    });
+    function openStudentProfile(name, email, date) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.header-tab').forEach(t => t.classList.remove('active'));
+      const page = document.getElementById('page-student');
+      page.innerHTML = `
+        <div style="padding:40px 24px;max-width:600px">
+          <button onclick="switchTab('info')" style="background:none;border:1px solid #d1d9e0;border-radius:6px;padding:5px 14px;font-size:13px;cursor:pointer;color:#656d76;margin-bottom:24px">← Back</button>
+          <div style="font-size:24px;font-weight:700;margin-bottom:6px">${name}</div>
+          <div style="font-size:13px;color:#656d76;margin-bottom:4px">${email !== 'Null' ? email : '<span style=color:#afb8c1>이메일 없음</span>'}</div>
+          <div style="font-size:13px;color:#656d76;margin-bottom:24px">생년월일: ${date}</div>
+          <div style="border-top:1px solid #d1d9e0;padding-top:20px;color:#afb8c1;font-size:13px">이 페이지는 비어 있습니다.</div>
+        </div>
+      `;
+      page.classList.add('active');
+    }
 
     // Toast notifications
     const sessionId = Math.random().toString(36).slice(2);
