@@ -3037,59 +3037,70 @@
       openStudentProfile(tr.dataset.student, tr.dataset.email, tr.dataset.date);
     });
 
-    function getStudentIds(name) {
-      return JSON.parse(localStorage.getItem('studentIds_' + name) || '[]');
+    function getStudentData(name) {
+      return JSON.parse(localStorage.getItem('studentData_' + name) || '{"ids":[],"pws":[]}');
     }
-    function saveStudentIds(name, ids) {
-      localStorage.setItem('studentIds_' + name, JSON.stringify(ids));
+    function saveStudentData(name, data) {
+      localStorage.setItem('studentData_' + name, JSON.stringify(data));
     }
 
     function maskValue(val) {
       return '*'.repeat(val.length);
     }
 
-    function renderStudentIds(name) {
-      const ids = getStudentIds(name);
+    function renderStudentData(name) {
+      const data = getStudentData(name);
       const container = document.getElementById('student-ids');
-      if (ids.length === 0) {
-        container.innerHTML = '<div style="color:#afb8c1;font-size:13px">저장된 ID가 없습니다.</div>';
+      let html = '';
+      if (data.ids.length === 0 && data.pws.length === 0) {
+        container.innerHTML = '<div style="color:#afb8c1;font-size:13px">저장된 데이터가 없습니다.</div>';
         return;
       }
-      container.innerHTML = ids.map((val, i) => `
-        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0">
-          <span style="font-size:12px;color:#656d76;min-width:75px">Student ID</span>
+      data.ids.forEach((val, i) => {
+        html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0">
+          <span style="font-size:12px;color:#656d76;min-width:75px">S.D ID</span>
           <span id="id-val-${i}" style="font-size:13px;font-family:monospace;letter-spacing:1px">${maskValue(val)}</span>
-          <button onclick="peekId('${name}',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#656d76">보이기</button>
-          <button onclick="removeId('${name}',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#cf222e">삭제</button>
-        </div>
-      `).join('');
+          <button onclick="peekVal('${name}','ids',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#656d76">보이기</button>
+          <button onclick="removeVal('${name}','ids',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#cf222e">삭제</button>
+        </div>`;
+      });
+      data.pws.forEach((val, i) => {
+        html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0">
+          <span style="font-size:12px;color:#656d76;min-width:75px">S.D PW</span>
+          <span id="pw-val-${i}" style="font-size:13px;font-family:monospace;letter-spacing:1px">${maskValue(val)}</span>
+          <button onclick="peekVal('${name}','pws',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#656d76">보이기</button>
+          <button onclick="removeVal('${name}','pws',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#cf222e">삭제</button>
+        </div>`;
+      });
+      container.innerHTML = html;
     }
 
-    function peekId(name, idx) {
-      const ids = getStudentIds(name);
-      const el = document.getElementById('id-val-' + idx);
-      el.textContent = ids[idx];
+    function peekVal(name, type, idx) {
+      const data = getStudentData(name);
+      const prefix = type === 'ids' ? 'id' : 'pw';
+      const el = document.getElementById(`${prefix}-val-${idx}`);
+      el.textContent = data[type][idx];
       el.style.color = '#1f2328';
       setTimeout(() => {
-        el.textContent = maskValue(ids[idx]);
+        el.textContent = maskValue(data[type][idx]);
         el.style.color = '';
       }, 3000);
     }
 
-    function removeId(name, idx) {
-      const ids = getStudentIds(name);
-      ids.splice(idx, 1);
-      saveStudentIds(name, ids);
-      renderStudentIds(name);
+    function removeVal(name, type, idx) {
+      const data = getStudentData(name);
+      data[type].splice(idx, 1);
+      saveStudentData(name, data);
+      renderStudentData(name);
     }
 
-    function addStudentId(name) {
-      const value = prompt('Student ID를 입력하세요');
+    function addStudentVal(name, type) {
+      const value = prompt('값을 입력하세요');
       if (!value) return;
-      const ids = getStudentIds(name);
-      ids.push(value);
-      saveStudentIds(name, ids);
-      renderStudentIds(name);
+      const data = getStudentData(name);
+      data[type].push(value);
+      saveStudentData(name, data);
+      renderStudentData(name);
     }
 
     function openStudentProfile(name, email, date) {
@@ -3105,14 +3116,15 @@
           <div style="border-top:1px solid #d1d9e0;padding-top:16px">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
               <span style="font-size:14px;font-weight:600">Saved IDs</span>
-              <button onclick="addStudentId('${name}')" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;color:#656d76">ADD S.D ID</button>
+              <button onclick="addStudentVal('${name}','ids')" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;color:#656d76">ADD S.D ID</button>
+              <button onclick="addStudentVal('${name}','pws')" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;color:#656d76">ADD S.D PW</button>
             </div>
             <div id="student-ids"></div>
           </div>
         </div>
       `;
       page.classList.add('active');
-      renderStudentIds(name);
+      renderStudentData(name);
     }
 
     // Toast notifications
