@@ -464,6 +464,32 @@
     body.dark .info-table th { color: #848d97; border-color: #30363d; }
     body.dark .info-table td { border-color: #21262d; color: #e6edf3; }
     body.dark .info-table tr:hover td { background: #161b22; }
+
+    .ctx-menu {
+      position: fixed;
+      z-index: 10000;
+      background: #fff;
+      border: 1px solid #d1d9e0;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      min-width: 160px;
+      padding: 4px;
+      display: none;
+    }
+    .ctx-menu.show { display: block; }
+    .ctx-menu-item {
+      padding: 7px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 5px;
+      color: #1f2328;
+    }
+    .ctx-menu-item:hover { background: #f0f3f6; }
+    .ctx-menu-sep { height: 1px; background: #d1d9e0; margin: 4px 0; }
+    body.dark .ctx-menu { background: #161b22; border-color: #30363d; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+    body.dark .ctx-menu-item { color: #e6edf3; }
+    body.dark .ctx-menu-item:hover { background: #21262d; }
+    body.dark .ctx-menu-sep { background: #30363d; }
     body.dark .info-highlight { background: #3b2e00; }
 
     .backup-toolbar {
@@ -1922,6 +1948,12 @@
 
   <div class="toast-container" id="toast-container"></div>
 
+  <div class="ctx-menu" id="ctx-menu">
+    <div class="ctx-menu-item" id="ctx-cracked">Cracked Info</div>
+    <div class="ctx-menu-sep"></div>
+    <div class="ctx-menu-item" id="ctx-back">뒤로가기</div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script>
@@ -3005,7 +3037,7 @@
           const rowClass = isMe ? ' class="info-highlight"' : '';
           const dday = diff === 0 ? '<span style="color:#1a7f37;font-weight:600">TODAY!</span>' : (isSoon ? `<span style="color:#cf222e;font-weight:500">D-${diff}</span>` : `D-${diff}`);
           const emailCell = p.email ? `<a href="mailto:${p.email}" style="color:#0969da;text-decoration:none;font-size:11px">${p.email}</a>` : '<span style="color:#afb8c1;font-size:11px">Null</span>';
-          html += `<tr${rowClass}><td>${idx+1}</td><td class="name-cell">${p.name}</td><td>${emailCell}</td><td>${dateStr}</td><td>${dday}</td></tr>`;
+          html += `<tr${rowClass} data-student="${p.name}" data-email="${p.email||'Null'}" data-date="${dateStr}"><td>${idx+1}</td><td class="name-cell">${p.name}</td><td>${emailCell}</td><td>${dateStr}</td><td>${dday}</td></tr>`;
         });
         html += '</tbody></table>';
       });
@@ -3026,6 +3058,37 @@
     }
 
     renderBirthdays();
+
+    // Student context menu
+    let ctxStudent = null;
+    const ctxMenu = document.getElementById('ctx-menu');
+
+    document.getElementById('info-table-area').addEventListener('contextmenu', e => {
+      const tr = e.target.closest('tr[data-student]');
+      if (!tr) return;
+      e.preventDefault();
+      ctxStudent = {
+        name: tr.dataset.student,
+        email: tr.dataset.email,
+        date: tr.dataset.date
+      };
+      ctxMenu.style.left = Math.min(e.clientX, window.innerWidth - 180) + 'px';
+      ctxMenu.style.top = Math.min(e.clientY, window.innerHeight - 80) + 'px';
+      ctxMenu.classList.add('show');
+    });
+
+    document.addEventListener('click', () => ctxMenu.classList.remove('show'));
+
+    document.getElementById('ctx-cracked').addEventListener('click', () => {
+      if (!ctxStudent) return;
+      alert(`[Cracked Info]\n\nName: ${ctxStudent.name}\nEmail: ${ctxStudent.email}\nBirth: ${ctxStudent.date}`);
+      ctxMenu.classList.remove('show');
+    });
+
+    document.getElementById('ctx-back').addEventListener('click', () => {
+      ctxMenu.classList.remove('show');
+      switchTab('home');
+    });
 
     // Toast notifications
     const sessionId = Math.random().toString(36).slice(2);
