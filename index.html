@@ -3055,10 +3055,10 @@
         container.innerHTML = '<div style="color:#afb8c1;font-size:13px">저장된 ID가 없습니다.</div>';
         return;
       }
-      container.innerHTML = ids.map((item, i) => `
+      container.innerHTML = ids.map((val, i) => `
         <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0">
-          <span style="font-size:12px;color:#656d76;min-width:60px">${item.label}</span>
-          <span id="id-val-${i}" style="font-size:13px;font-family:monospace;letter-spacing:1px">${maskValue(item.value)}</span>
+          <span style="font-size:12px;color:#656d76;min-width:75px">Student ID</span>
+          <span id="id-val-${i}" style="font-size:13px;font-family:monospace;letter-spacing:1px">${maskValue(val)}</span>
           <button onclick="peekId('${name}',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#656d76">보이기</button>
           <button onclick="removeId('${name}',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#cf222e">삭제</button>
         </div>
@@ -3068,10 +3068,10 @@
     function peekId(name, idx) {
       const ids = getStudentIds(name);
       const el = document.getElementById('id-val-' + idx);
-      el.textContent = ids[idx].value;
+      el.textContent = ids[idx];
       el.style.color = '#1f2328';
       setTimeout(() => {
-        el.textContent = maskValue(ids[idx].value);
+        el.textContent = maskValue(ids[idx]);
         el.style.color = '';
       }, 3000);
     }
@@ -3084,12 +3084,10 @@
     }
 
     function addStudentId(name) {
-      const label = prompt('ID 라벨 (예: Instagram, Discord 등)');
-      if (!label) return;
-      const value = prompt('값을 입력하세요');
+      const value = prompt('Student ID를 입력하세요');
       if (!value) return;
       const ids = getStudentIds(name);
-      ids.push({ label, value });
+      ids.push(value);
       saveStudentIds(name, ids);
       renderStudentIds(name);
     }
