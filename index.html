@@ -3037,6 +3037,63 @@
       openStudentProfile(tr.dataset.student, tr.dataset.email, tr.dataset.date);
     });
 
+    function getStudentIds(name) {
+      return JSON.parse(localStorage.getItem('studentIds_' + name) || '[]');
+    }
+    function saveStudentIds(name, ids) {
+      localStorage.setItem('studentIds_' + name, JSON.stringify(ids));
+    }
+
+    function maskValue(val) {
+      return '*'.repeat(val.length);
+    }
+
+    function renderStudentIds(name) {
+      const ids = getStudentIds(name);
+      const container = document.getElementById('student-ids');
+      if (ids.length === 0) {
+        container.innerHTML = '<div style="color:#afb8c1;font-size:13px">저장된 ID가 없습니다.</div>';
+        return;
+      }
+      container.innerHTML = ids.map((item, i) => `
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0">
+          <span style="font-size:12px;color:#656d76;min-width:60px">${item.label}</span>
+          <span id="id-val-${i}" style="font-size:13px;font-family:monospace;letter-spacing:1px">${maskValue(item.value)}</span>
+          <button onclick="peekId('${name}',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#656d76">보이기</button>
+          <button onclick="removeId('${name}',${i})" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;color:#cf222e">삭제</button>
+        </div>
+      `).join('');
+    }
+
+    function peekId(name, idx) {
+      const ids = getStudentIds(name);
+      const el = document.getElementById('id-val-' + idx);
+      el.textContent = ids[idx].value;
+      el.style.color = '#1f2328';
+      setTimeout(() => {
+        el.textContent = maskValue(ids[idx].value);
+        el.style.color = '';
+      }, 3000);
+    }
+
+    function removeId(name, idx) {
+      const ids = getStudentIds(name);
+      ids.splice(idx, 1);
+      saveStudentIds(name, ids);
+      renderStudentIds(name);
+    }
+
+    function addStudentId(name) {
+      const label = prompt('ID 라벨 (예: Instagram, Discord 등)');
+      if (!label) return;
+      const value = prompt('값을 입력하세요');
+      if (!value) return;
+      const ids = getStudentIds(name);
+      ids.push({ label, value });
+      saveStudentIds(name, ids);
+      renderStudentIds(name);
+    }
+
     function openStudentProfile(name, email, date) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.header-tab').forEach(t => t.classList.remove('active'));
@@ -3047,10 +3104,17 @@
           <div style="font-size:24px;font-weight:700;margin-bottom:6px">${name}</div>
           <div style="font-size:13px;color:#656d76;margin-bottom:4px">${email !== 'Null' ? email : '<span style=color:#afb8c1>이메일 없음</span>'}</div>
           <div style="font-size:13px;color:#656d76;margin-bottom:24px">생년월일: ${date}</div>
-          <div style="border-top:1px solid #d1d9e0;padding-top:20px;color:#afb8c1;font-size:13px">이 페이지는 비어 있습니다.</div>
+          <div style="border-top:1px solid #d1d9e0;padding-top:16px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <span style="font-size:14px;font-weight:600">Saved IDs</span>
+              <button onclick="addStudentId('${name}')" style="background:none;border:1px solid #d1d9e0;border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;color:#656d76">ADD ID</button>
+            </div>
+            <div id="student-ids"></div>
+          </div>
         </div>
       `;
       page.classList.add('active');
+      renderStudentIds(name);
     }
 
     // Toast notifications
